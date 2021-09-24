@@ -85,7 +85,7 @@ fun ageDescription(age: Int): String =
     fun timeForHalfWay(t1: Double, v1: Double, t2: Double, v2: Double, t3: Double, v3: Double): Double {
         val halfWay = ((t1 * v1) + (t2 * v2) + (t3 * v3)) / 2
         if ((t1 * v1) > halfWay) return halfWay / v1
-        if (((t1 * v2) < halfWay) && (halfWay < ((t1 * v1) + (t2 * v2)))) return t1 + (halfWay - (t1 * v1)) / v2
+        else if (((t1 * v2) < halfWay) && (halfWay < ((t1 * v1) + (t2 * v2)))) return t1 + (halfWay - (t1 * v1)) / v2
         else return t1 + t2 + (halfWay - (t1 * v1) - (t2 * v2)) / v3
     }
 
@@ -100,8 +100,8 @@ fun ageDescription(age: Int): String =
      */
     fun whichRookThreatens(kingX: Int, kingY: Int, rookX1: Int, rookY1: Int, rookX2: Int, rookY2: Int): Int {
             if (((rookX1 == kingX) || (rookY1 == kingY)) && ((rookX2 == kingX) || (rookY2 == kingY))) return 3
-            if (((rookX1 == kingX) || (rookY1 == kingY)) && ((rookX2 != kingX) || (rookY2 != kingY))) return 1
-            if (((rookX2 == kingX) || (rookY2 == kingY)) && ((rookX1 != kingX) || (rookY1 != kingY))) return 2
+            else if (((rookX1 == kingX) || (rookY1 == kingY)) && ((rookX2 != kingX) || (rookY2 != kingY))) return 1
+            else if (((rookX2 == kingX) || (rookY2 == kingY)) && ((rookX1 != kingX) || (rookY1 != kingY))) return 2
             else return 0
     }
 
@@ -115,12 +115,12 @@ fun ageDescription(age: Int): String =
      * и 3, если угроза есть и от ладьи и от слона.
      * Считать, что ладья и слон не могут загораживать друг друга.
      */
-    fun rookOrBishopThreatens(
-        kingX: Int, kingY: Int,
-        rookX: Int, rookY: Int,
-        bishopX: Int, bishopY: Int
-    ): Int = TODO()
-
+    fun rookOrBishopThreatens(kingX: Int, kingY: Int, rookX: Int, rookY: Int, bishopX: Int, bishopY: Int): Int {
+        if (((rookX == kingX) || (rookY == kingY)) && ((kingX - bishopX) * (kingX - bishopX) == (kingY - bishopY) * (kingY - bishopY))) return 3
+        else if ((rookX == kingX) || (rookY == kingY)) return 1
+        else if ((kingX - bishopX) * (kingX - bishopX) == (kingY - bishopY) * (kingY - bishopY)) return 2
+        else return 0
+    }
     /**
      * Простая (2 балла)
      *
