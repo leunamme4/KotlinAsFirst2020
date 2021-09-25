@@ -145,11 +145,12 @@ fun ageDescription(age: Int): String =
      * Найти длину пересечения отрезков AB и CD.
      * Если пересечения нет, вернуть -1.
      */
-    fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-        if ((b < c) || (d < a)) return -1
-        if ((a < c) && (b > c) && (b < d)) return b - c
-        if ((a < c) && (b > c) && (b > d)) return d - c
-        if ((c < a) && (b < d)) return b - a
-        if (b == c) return 0
-        else return d - a
+    fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
+        when {
+            ((b < c) || (d < a)) -> -1
+            ((a < c) && (b > c) && (b < d)) -> b - c
+            ((a < c) && (b > c) && (b > d)) -> d - c
+            ((c < a) && (b < d)) -> b - a
+            (b == c) -> 0
+            else -> d - a
     }
