@@ -152,5 +152,8 @@ fun ageDescription(age: Int): String =
             ((a < c) && (b > c) && (b > d)) -> d - c
             ((c < a) && (b < d)) -> b - a
             (b == c) -> 0
+            (a == c) && (b < d) -> b - a
+            (b == d) && (c > a) -> b - c
+            (b == d) && (c < a) -> b - a
             else -> d - a
     }
