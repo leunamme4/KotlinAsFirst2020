@@ -2,7 +2,8 @@
 
 package lesson3.task1
 
-import kotlin.math.sqrt
+import kotlin.math.*
+
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -72,7 +73,16 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int {
+    var l = n
+    var k = 0
+    if (l == 0) return 1
+    while (l > 0) {
+        k += 1
+        l /= 10
+    }
+    return k
+}
 
 /**
  * Простая (2 балла)
@@ -80,7 +90,13 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    when (n) {
+        1 -> return 1
+        2 -> return 1
+    }
+    return fib(n - 1) + fib(n - 2)
+}
 
 /**
  * Простая (2 балла)
@@ -179,7 +195,17 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    if (x == 0.0 || (x / PI == round(x / PI))) return 0.0
+    var sinus = x
+    var factNumber = 3
+    while (x.pow(factNumber) / factorial(factNumber) >= eps) {
+        if (factNumber % 4 == 3) sinus -= x.pow(factNumber) / factorial(factNumber)
+        else sinus += x.pow(factNumber) / factorial(factNumber)
+        factNumber += 2
+    }
+    return sinus
+}
 
 /**
  * Средняя (4 балла)
@@ -190,7 +216,18 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double {
+    if (x == 0.0 || ((x / PI == round(x / PI)) && (x / PI % 2) == 0.0)) return 1.0
+    if ((x / PI == round(x / PI)) && (x / PI % 2) == 1.0) return -1.0
+    var cosinus = 1.0
+    var factNumber = 2
+    while (x.pow(factNumber) / factorial(factNumber) >= eps) {
+        if (factNumber % 4 == 2) cosinus -= x.pow(factNumber) / factorial(factNumber)
+        else cosinus += x.pow(factNumber) / factorial(factNumber)
+        factNumber += 2
+    }
+    return cosinus
+}
 
 /**
  * Сложная (4 балла)
@@ -201,7 +238,25 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var k = 0
+    var element = 1
+    var prElement = 0
+    while (k < n) {
+        var el2 = element * element
+        k += digitNumber(el2)
+        if (k > n) {
+            val number = k - n
+            for (i in 1..number) {
+                el2 /= 10
+            }
+            return el2 % 10
+        }
+        prElement = el2
+        element += 1
+    }
+    return prElement % 10
+}
 
 /**
  * Сложная (5 баллов)
@@ -212,4 +267,27 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    when (n) {
+        1 -> return 1
+        2 -> return 1
+    }
+    var k = 2
+    var f1 = 1
+    var f2 = 1
+    var element = 0
+    while (k < n) {
+        element = f1 + f2
+        k += digitNumber(element)
+        if (k > n) {
+            val number = k - n
+            for (i in 1..number) {
+                element /= 10
+            }
+            return element % 10
+        }
+        f1 = f2
+        f2 = element
+    }
+    return element % 10
+}

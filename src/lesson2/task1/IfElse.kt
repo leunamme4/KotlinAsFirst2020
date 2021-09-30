@@ -68,11 +68,11 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String {
-    if (age > 0 && age < 200) {
+    if (age in 1..199) {
         if (age % 10 == 0 || age % 10 >= 5 || (age % 100 >= 11 && age % 100 <= 14))
             return "$age лет"
         if (age % 10 == 1) return "$age год"
-        if (age % 10 > 0 && age % 10 < 5) return "$age года"
+        if (age % 10 in 1..4) return "$age года"
     }
     return "столько не живут"
 }
@@ -154,12 +154,14 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val min2 = min(min1, c)
     val middle = a + b + c - (max2 + min2)
     if (a + b > c && a + c > b && b + c > a) {
-        if ((middle.pow(2.0) + min2.pow(2.0)) > max2.pow(2.0)) return 0
-        if ((middle.pow(2.0) + min2.pow(2.0)) == max2.pow(2.0)) return 1
-        if ((middle.pow(2.0) + min2.pow(2.0)) < max2.pow(2.0)) return 2
+        when {
+            ((middle.pow(2.0) + min2.pow(2.0)) > max2.pow(2.0)) -> return 0
+            ((middle.pow(2.0) + min2.pow(2.0)) == max2.pow(2.0)) -> return 1
+            ((middle.pow(2.0) + min2.pow(2.0)) < max2.pow(2.0)) -> return 2
+        }
     }
     return -1
-    }
+}
 
 /**
  * Средняя (3 балла)
@@ -169,15 +171,17 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if ((c == d && c >= a && b >= c) || (a == b && a >= c && d >= a)) return 0
-    if (a == c && b != d) return abs(a - min(b, d))
-    if (b == d && a != c) return abs(b - max(a, c))
-    if (a < c && c < d && d < b) return d - c
-    if (a > c && d > b) return b - a
-    if (c == b || a == d) return 0
-    if (a == c && b == d) return b - a
-    if (b > c && d > a && c > a) return b - c
-    if (d > a && b > c && b > d) return d - a
-    else return -1
-}
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
+    when {
+        ((c == d && c >= a && b >= c) || (a == b && a >= c && d >= a)) -> 0
+        (a == c && b != d) -> abs(a - min(b, d))
+        (b == d && a != c) -> abs(b - max(a, c))
+        (a < c && c < d && d < b) -> d - c
+        (a > c && d > b) -> b - a
+        (c == b || a == d) -> 0
+        (a == c && b == d) -> b - a
+        (b > c && d > a && c > a) -> b - c
+        (d > a && b > c && b > d) -> d - a
+        else -> -1
+    }
+
