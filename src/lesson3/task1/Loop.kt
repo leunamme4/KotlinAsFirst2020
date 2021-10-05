@@ -2,6 +2,8 @@
 
 package lesson3.task1
 
+import kotlin.math.pow
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 // Урок 3: циклы
@@ -72,7 +74,15 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int {
+    var digitCount = 0
+    var nCopy = n
+    do {
+        nCopy /= 10
+        digitCount++
+    } while (nCopy > 0)
+    return digitCount
+}
 
 /**
  * Простая (2 балла)
@@ -80,21 +90,47 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    return when (n) {
+        1 -> 1
+        2 -> 1
+        else -> fib(n - 1) + fib(n - 2)
+    }
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    if (n % 2 == 0)
+        return 2
+    if (n % 3 == 0)
+        return 3
+    if (n % 5 == 0)
+        return 5
+    else
+        for (i in 7..(n / 5) step 2)
+            if (n % i == 0)
+                return i
+    return n
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    var maxDel = 1
+    for (i in (n / 2) downTo 1) {
+        if (n % i == 0)
+            if (i > maxDel)
+                maxDel = i
+    }
+    return maxDel
+}
 
 /**
  * Простая (2 балла)
@@ -112,7 +148,18 @@ fun maxDivisor(n: Int): Int = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var steps = 0
+    var xCopy = x
+    while (xCopy != 1) {
+        if (xCopy % 2 == 0)
+            xCopy /= 2
+        else
+            xCopy = 3 * xCopy + 1
+        steps++
+    }
+    return steps
+}
 
 /**
  * Средняя (3 балла)
@@ -129,7 +176,18 @@ fun lcm(m: Int, n: Int): Int = TODO()
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+
+fun isCoPrime(m: Int, n: Int): Boolean {
+    var mCopy = m
+    var nCopy = n
+    while (mCopy != nCopy)
+        if (mCopy > nCopy)
+            mCopy -= nCopy
+        else
+            nCopy -= mCopy
+    return mCopy == 1
+}
+
 
 /**
  * Средняя (3 балла)
@@ -138,7 +196,23 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var nCopy = n
+    var reverseNumber = 0
+    var loopCount = 0
+    var curDigit = 0
+    if (n < 10)
+        return n
+    else {
+        while (nCopy > 0) {
+            curDigit = nCopy % 10
+            reverseNumber += ((curDigit * (10.0.pow(digitNumber(n) - loopCount - 1))).toInt())
+            loopCount++
+            nCopy /= 10
+        }
+    }
+    return reverseNumber
+}
 
 /**
  * Средняя (3 балла)
@@ -149,7 +223,7 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean = n == revert(n)
 
 /**
  * Средняя (3 балла)
@@ -192,7 +266,20 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var number = 1
+    var count = 2
+    while (digitNumber(number) < n) {
+        val sqrCount = count * count
+        val sqrDigitCount = digitNumber(sqrCount)
+        val number1 = number * 10.0.pow(sqrDigitCount) + sqrCount
+        number = number1.roundToInt()
+        count++
+    }
+    val totalDigitNumber = digitNumber(number)
+    val del = 10.0.pow(totalDigitNumber - n)
+    return ((number / del) % 10).roundToInt()
+}
 
 /**
  * Сложная (5 баллов)
