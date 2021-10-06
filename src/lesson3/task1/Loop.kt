@@ -2,8 +2,8 @@
 
 package lesson3.task1
 
+import kotlin.math.abs
 import kotlin.math.pow
-import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 // Урок 3: циклы
@@ -80,7 +80,7 @@ fun digitNumber(n: Int): Int {
     do {
         nCopy /= 10
         digitCount++
-    } while (nCopy > 0)
+    } while (abs(nCopy) > 0)
     return digitCount
 }
 
@@ -267,18 +267,21 @@ fun cos(x: Double, eps: Double): Double = TODO()
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var number = 1
-    var count = 2
-    while (digitNumber(number) < n) {
-        val sqrCount = count * count
-        val sqrDigitCount = digitNumber(sqrCount)
-        val number1 = number * 10.0.pow(sqrDigitCount) + sqrCount
-        number = number1.roundToInt()
+    var digitCount = 0
+    var count = 1
+    while (digitCount < n) {
+        digitCount += digitNumber(count * count)
         count++
     }
-    val totalDigitNumber = digitNumber(number)
-    val del = 10.0.pow(totalDigitNumber - n)
-    return ((number / del) % 10).roundToInt()
+    count -= 1
+    val sqrCount = count * count
+    val sqrDigitCount = digitNumber(sqrCount)
+    return if (digitCount == n)
+        sqrCount % 10
+    else if (digitCount - n == 1 && sqrDigitCount > 2)
+        (sqrCount / 10) % 10
+    else
+        ((sqrCount / 10.0.pow(digitCount - n)).toInt())
 }
 
 /**
