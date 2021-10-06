@@ -91,11 +91,17 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
-    return when (n) {
-        1 -> 1
-        2 -> 1
-        else -> fib(n - 1) + fib(n - 2)
+    var fib1 = 1
+    var fib2 = 1
+    var fibSum = 0
+    var circle = 0
+    while (circle < n - 2) {
+        fibSum = fib1 + fib2
+        fib1 = fib2
+        fib2 = fibSum
+        circle++
     }
+    return fib2
 }
 
 /**
@@ -293,4 +299,20 @@ fun squareSequenceDigit(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var digitCount = 0
+    var count = 1
+    while (digitCount < n) {
+        digitCount += digitNumber(fib(count))
+        count++
+    }
+    count -= 1
+    val fibCount = fib(count)
+    val fibDigitCount = digitNumber(fibCount)
+    return if (digitCount == n)
+        fib(count) % 10
+    else if (digitCount - n == 1 && fibDigitCount > 2)
+        (fibCount / 10) % 10
+    else
+        ((fibCount / 10.0.pow(digitCount - n)).toInt())
+}
