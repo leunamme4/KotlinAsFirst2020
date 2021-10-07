@@ -4,7 +4,7 @@ package lesson2.task1
 
 import lesson1.task1.discriminant
 import kotlin.math.max
-import kotlin.math.*
+import kotlin.math.sqrt
 
 // Урок 2: ветвления (здесь), логический тип (см. 2.2).
 // Максимальное количество баллов = 6
@@ -74,86 +74,77 @@ fun ageDescription(age: Int): String =
         age % 10 in 2..4 -> "$age года"
         age % 10 == 1 -> "$age год"
         else -> "$age лет"
+    }
+
+/**
+ * Простая (2 балла)
+ *
+ * Путник двигался t1 часов со скоростью v1 км/час, затем t2 часов — со скоростью v2 км/час
+ * и t3 часов — со скоростью v3 км/час.
+ * Определить, за какое время он одолел первую половину пути?
+ */
+fun timeForHalfWay(t1: Double, v1: Double, t2: Double, v2: Double, t3: Double, v3: Double): Double = TODO()
+
+/**
+ * Простая (2 балла)
+ *
+ * Нa шахматной доске стоят черный король и две белые ладьи (ладья бьет по горизонтали и вертикали).
+ * Определить, не находится ли король под боем, а если есть угроза, то от кого именно.
+ * Вернуть 0, если угрозы нет, 1, если угроза только от первой ладьи, 2, если только от второй ладьи,
+ * и 3, если угроза от обеих ладей.
+ * Считать, что ладьи не могут загораживать друг друга
+ */
+fun whichRookThreatens(kingX: Int, kingY: Int, rookX1: Int, rookY1: Int, rookX2: Int, rookY2: Int): Int {
+    return if (((rookX1 == kingX) || (rookY1 == kingY)) && ((rookX2 == kingX) || (rookY2 == kingY))) 3
+    else if (((rookX1 == kingX) || (rookY1 == kingY)) && ((rookX2 != kingX) || (rookY2 != kingY))) 1
+    else if (((rookX2 == kingX) || (rookY2 == kingY)) && ((rookX1 != kingX) || (rookY1 != kingY))) 2
+    else 0
 }
-    /**
-     * Простая (2 балла)
-     *
-     * Путник двигался t1 часов со скоростью v1 км/час, затем t2 часов — со скоростью v2 км/час
-     * и t3 часов — со скоростью v3 км/час.
-     * Определить, за какое время он одолел первую половину пути?
-     */
-    fun timeForHalfWay(t1: Double, v1: Double, t2: Double, v2: Double, t3: Double, v3: Double): Double {
-        val halfWay = ((t1 * v1) + (t2 * v2) + (t3 * v3)) / 2
-        if ((t1 * v1) > halfWay) return halfWay / v1
-        else if (((t1 * v2) < halfWay) && (halfWay < ((t1 * v1) + (t2 * v2)))) return t1 + (halfWay - (t1 * v1)) / v2
-        else return t1 + t2 + (halfWay - (t1 * v1) - (t2 * v2)) / v3
-    }
 
-        /**
-     * Простая (2 балла)
-     *
-     * Нa шахматной доске стоят черный король и две белые ладьи (ладья бьет по горизонтали и вертикали).
-     * Определить, не находится ли король под боем, а если есть угроза, то от кого именно.
-     * Вернуть 0, если угрозы нет, 1, если угроза только от первой ладьи, 2, если только от второй ладьи,
-     * и 3, если угроза от обеих ладей.
-     * Считать, что ладьи не могут загораживать друг друга
-     */
-    fun whichRookThreatens(kingX: Int, kingY: Int, rookX1: Int, rookY1: Int, rookX2: Int, rookY2: Int): Int {
-            if (((rookX1 == kingX) || (rookY1 == kingY)) && ((rookX2 == kingX) || (rookY2 == kingY))) return 3
-            else if (((rookX1 == kingX) || (rookY1 == kingY)) && ((rookX2 != kingX) || (rookY2 != kingY))) return 1
-            else if (((rookX2 == kingX) || (rookY2 == kingY)) && ((rookX1 != kingX) || (rookY1 != kingY))) return 2
-            else return 0
-    }
+/**
+ * Простая (2 балла)
+ *
+ * На шахматной доске стоят черный король и белые ладья и слон
+ * (ладья бьет по горизонтали и вертикали, слон — по диагоналям).
+ * Проверить, есть ли угроза королю и если есть, то от кого именно.
+ * Вернуть 0, если угрозы нет, 1, если угроза только от ладьи, 2, если только от слона,
+ * и 3, если угроза есть и от ладьи и от слона.
+ * Считать, что ладья и слон не могут загораживать друг друга.
+ */
+fun rookOrBishopThreatens(kingX: Int, kingY: Int, rookX: Int, rookY: Int, bishopX: Int, bishopY: Int): Int {
+    return if (((rookX == kingX) || (rookY == kingY)) && ((kingX - bishopX) * (kingX - bishopX) == (kingY - bishopY) * (kingY - bishopY))) 3
+    else if ((rookX == kingX) || (rookY == kingY)) 1
+    else if ((kingX - bishopX) * (kingX - bishopX) == (kingY - bishopY) * (kingY - bishopY)) 2
+    else 0
+}
 
-    /**
-     * Простая (2 балла)
-     *
-     * На шахматной доске стоят черный король и белые ладья и слон
-     * (ладья бьет по горизонтали и вертикали, слон — по диагоналям).
-     * Проверить, есть ли угроза королю и если есть, то от кого именно.
-     * Вернуть 0, если угрозы нет, 1, если угроза только от ладьи, 2, если только от слона,
-     * и 3, если угроза есть и от ладьи и от слона.
-     * Считать, что ладья и слон не могут загораживать друг друга.
-     */
-    fun rookOrBishopThreatens(kingX: Int, kingY: Int, rookX: Int, rookY: Int, bishopX: Int, bishopY: Int): Int {
-        if (((rookX == kingX) || (rookY == kingY)) && ((kingX - bishopX) * (kingX - bishopX) == (kingY - bishopY) * (kingY - bishopY))) return 3
-        else if ((rookX == kingX) || (rookY == kingY)) return 1
-        else if ((kingX - bishopX) * (kingX - bishopX) == (kingY - bishopY) * (kingY - bishopY)) return 2
-        else return 0
-    }
-    /**
-     * Простая (2 балла)
-     *
-     * Треугольник задан длинами своих сторон a, b, c.
-     * Проверить, является ли данный треугольник остроугольным (вернуть 0),
-     * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
-     * Если такой треугольник не существует, вернуть -1.
-     */
-    fun triangleKind(a: Double, b: Double, c: Double): Int {
-        if (c.pow(2) == a.pow(2) + b.pow(2) || a.pow(2) == c.pow(2) + b.pow(2)
-            || b.pow(2) == a.pow(2) + c.pow(2)) return 1
-        if ((a + b < c) || (a + c < b) || (c + b < a)) return -1
-        if (c.pow(2) < a.pow(2) + b.pow(2)) return 0
-        else return 2
-    }
+/**
+ * Простая (2 балла)
+ *
+ * Треугольник задан длинами своих сторон a, b, c.
+ * Проверить, является ли данный треугольник остроугольным (вернуть 0),
+ * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
+ * Если такой треугольник не существует, вернуть -1.
+ */
+fun triangleKind(a: Double, b: Double, c: Double): Double = TODO()
 
-    /**
-     * Средняя (3 балла)
-     *
-     * Даны четыре точки на одной прямой: A, B, C и D.
-     * Координаты точек a, b, c, d соответственно, b >= a, d >= c.
-     * Найти длину пересечения отрезков AB и CD.
-     * Если пересечения нет, вернуть -1.
-     */
-    fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
-        when {
-            ((b < c) || (d < a)) -> -1
-            ((a < c) && (b > c) && (b < d)) -> b - c
-            ((a < c) && (b > c) && (b > d)) -> d - c
-            ((c < a) && (b < d)) -> b - a
-            (b == c) -> 0
-            (a == c) && (b < d) -> b - a
-            (b == d) && (c > a) -> b - c
-            (b == d) && (c < a) -> b - a
-            else -> d - a
+/**
+ * Средняя (3 балла)
+ *
+ * Даны четыре точки на одной прямой: A, B, C и D.
+ * Координаты точек a, b, c, d соответственно, b >= a, d >= c.
+ * Найти длину пересечения отрезков AB и CD.
+ * Если пересечения нет, вернуть -1.
+ */
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
+    when {
+        ((b < c) || (d < a)) -> -1
+        ((a < c) && (b > c) && (b < d)) -> b - c
+        ((a < c) && (b > c) && (b > d)) -> d - c
+        ((c < a) && (b < d)) -> b - a
+        (b == c) -> 0
+        (a == c) && (b < d) -> b - a
+        (b == d) && (c > a) -> b - c
+        (b == d) && (c < a) -> b - a
+        else -> d - a
     }

@@ -112,12 +112,8 @@ fun fib(n: Int): Int {
 fun minDivisor(n: Int): Int {
     if (n % 2 == 0)
         return 2
-    if (n % 3 == 0)
-        return 3
-    if (n % 5 == 0)
-        return 5
     else
-        for (i in 7..(n / 5) step 2)
+        for (i in 3..(n / 5) step 2)
             if (n % i == 0)
                 return i
     return n
@@ -209,13 +205,11 @@ fun revert(n: Int): Int {
     var curDigit = 0
     if (n < 10)
         return n
-    else {
-        while (nCopy > 0) {
-            curDigit = nCopy % 10
-            reverseNumber += ((curDigit * (10.0.pow(digitNumber(n) - loopCount - 1))).toInt())
-            loopCount++
-            nCopy /= 10
-        }
+    while (nCopy > 0) {
+        curDigit = nCopy % 10
+        reverseNumber += ((curDigit * (10.0.pow(digitNumber(n) - loopCount - 1))).toInt())
+        loopCount++
+        nCopy /= 10
     }
     return reverseNumber
 }
@@ -287,7 +281,7 @@ fun squareSequenceDigit(n: Int): Int {
     else if (digitCount - n == 1 && sqrDigitCount > 2)
         (sqrCount / 10) % 10
     else
-        ((sqrCount / 10.0.pow(digitCount - n)).toInt())
+        ((sqrCount / 10.0.pow(digitCount - n)).toInt()) % 10
 }
 
 /**
@@ -314,5 +308,5 @@ fun fibSequenceDigit(n: Int): Int {
     else if (digitCount - n == 1 && fibDigitCount > 2)
         (fibCount / 10) % 10
     else
-        ((fibCount / 10.0.pow(digitCount - n)).toInt())
+        ((fibCount / 10.0.pow(digitCount - n)).toInt()) % 10
 }
