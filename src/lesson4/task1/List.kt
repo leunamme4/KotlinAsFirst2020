@@ -3,7 +3,8 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
-import kotlin.math.sqrt
+
+import kotlin.math.*
 
 // Урок 4: списки
 // Максимальное количество баллов = 12
@@ -120,14 +121,23 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double = TODO()
+fun abs(v: List<Double>): Double {
+    var result = 0.0
+    for (element in v) {
+        result += element * element
+    }
+    return sqrt(result)
+}
 
 /**
  * Простая (2 балла)
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double = TODO()
+fun mean(list: List<Double>): Double {
+    if (list.isEmpty()) return 0.0
+    return list.sum() / list.size
+}
 
 /**
  * Средняя (3 балла)
@@ -137,7 +147,15 @@ fun mean(list: List<Double>): Double = TODO()
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun center(list: MutableList<Double>): MutableList<Double> = TODO()
+fun center(list: MutableList<Double>): MutableList<Double> {
+    if (list.isEmpty()) return list
+    val average = list.sum() / list.size
+    for (i in 0 until list.size) {
+        val element = list[i]
+        list[i] = element - average
+    }
+    return list
+}
 
 /**
  * Средняя (3 балла)
@@ -231,7 +249,15 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    var result = 0.0
+    var a = 0.0
+    for (i in str.length - 1 downTo 0) {
+        result += str[i].digitToInt(base) * base.toDouble().pow(a)
+        a += 1
+    }
+    return result.toInt()
+}
 
 /**
  * Сложная (5 баллов)
@@ -250,4 +276,105 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val hundreds = listOf(
+        "",
+        "сто ",
+        "двести ",
+        "триста ",
+        "четыреста ",
+        "пятьсот ",
+        "шестьсот ",
+        "семьсот ",
+        "восемьсот ",
+        "девятьсот "
+    )
+    val ones = listOf(
+        "",
+        "один ",
+        "два ",
+        "три ",
+        "четыре ",
+        "пять ",
+        "шесть ",
+        "семь ",
+        "восемь ",
+        "девять "
+    )
+    val dozens = listOf(
+        "",
+        "десять ",
+        "двадцать ",
+        "тридцать ",
+        "сорок ",
+        "пятьдесят ",
+        "шестьдесят ",
+        "семьдесят ",
+        "восемьдесят ",
+        "девяносто "
+    )
+    val dozens2 = listOf(
+        "",
+        "одиннадцать ",
+        "двенадцать ",
+        "тринадцать ",
+        "четырнадцать ",
+        "пятнадцать ",
+        "шестнадцать ",
+        "семнадцать ",
+        "восемнадцать ",
+        "девятнадцать "
+    )
+    val onesForThousands = listOf(
+        "тысяч ",
+        "одна тысяча ",
+        "две тысячи ",
+        "три тысячи ",
+        "четыре тысячи ",
+        "пять тысяч ",
+        "шесть тысяч ",
+        "семь тысяч ",
+        "восемь тысяч ",
+        "девять тысяч "
+    )
+    var n1 = n
+    var k = 0
+    while (n1 > 0) {
+        k += 1
+        n1 /= 10
+    }
+    when {
+        k == 1 -> ones[n]
+        k == 2 && n / 10 == 1 -> return (dozens2[n % 10]).trim()
+        k == 2 -> return (dozens[n / 10] + " " + ones[n % 10]).trim()
+        k == 3 && (n % 100) / 10 == 1 -> return (hundreds[n / 100] + dozens2[n % 10]).trim()
+        k == 3 -> return (hundreds[n / 100] + dozens[(n % 100) / 10] + ones[n % 10]).trim()
+        k == 4 && n / 1000 == 1 && (n % 100) / 10 == 1 -> return ("тысяча " + hundreds[(n % 1000) / 100] +
+                dozens2[n % 10]).trim()
+        k == 4 && n / 1000 == 1 && (n % 100) / 10 == 1 -> return (onesForThousands[n / 1000] +
+                hundreds[(n % 1000) / 100] + dozens2[n % 10]).trim()
+        k == 4 && n / 1000 == 1 -> return ("тысяча " + hundreds[(n % 1000) / 100] +
+                dozens[(n % 100) / 10] + ones[n % 10]).trim()
+        k == 4 -> return (onesForThousands[n / 1000] + hundreds[(n % 1000) / 100] +
+                dozens[(n % 100) / 10] + ones[n % 10]).trim()
+        k == 5 && n / 10000 == 1 && (n % 100) / 10 == 1 -> return (dozens2[(n % 10000) / 1000] + "тысяч " +
+                hundreds[(n % 1000) / 100] + dozens2[n % 10]).trim()
+        k == 5 && n / 10000 == 1 -> return (dozens2[(n % 10000) / 1000] + "тысяч " +
+                hundreds[(n % 1000) / 100] + dozens[(n % 100) / 10] + ones[n % 10]).trim()
+        k == 5 && (n % 100) / 10 == 1 -> return (dozens[n / 10000] + onesForThousands[(n % 10000) / 1000] +
+                hundreds[(n % 1000) / 100] + dozens2[n % 10]).trim()
+        k == 5 -> return (dozens[n / 10000] + onesForThousands[(n % 10000) / 1000] +
+                hundreds[(n % 1000) / 100] + dozens[(n % 100) / 10] + ones[n % 10]).trim()
+        k == 6 && (n % 100000) / 10000 == 1 && (n % 100) / 10 == 1 -> return (hundreds[n / 100000] +
+                dozens2[(n % 10000) / 1000] + "тысяч " + hundreds[(n % 1000) / 100] + dozens2[n % 10]).trim()
+        k == 6 && (n % 100000) / 10000 == 1 -> return (hundreds[n / 100000] + dozens2[(n % 10000) / 1000] +
+                "тысяч " + hundreds[(n % 1000) / 100] + dozens[(n % 100) / 10] + ones[n % 10]).trim()
+        k == 6 && (n % 100) / 10 == 1 -> return (hundreds[n / 100000] + dozens[(n % 100000) / 10000] +
+                onesForThousands[(n % 10000) / 1000] + hundreds[(n % 1000) / 100] +
+                dozens2[n % 10]).trim()
+        k == 6 -> return (hundreds[n / 100000] + dozens[(n % 100000) / 10000] +
+                onesForThousands[(n % 10000) / 1000] + hundreds[(n % 1000) / 100] +
+                dozens[(n % 100) / 10] + ones[n % 10]).trim()
+    }
+    return "0"
+}

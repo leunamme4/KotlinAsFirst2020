@@ -92,8 +92,7 @@ fun digitNumber(n: Int): Int {
  */
 fun fib(n: Int): Int {
     when (n) {
-        1 -> return 1
-        2 -> return 1
+        1, 2 -> return 1
     }
     return fib(n - 1) + fib(n - 2)
 }
@@ -269,8 +268,7 @@ fun squareSequenceDigit(n: Int): Int {
  */
 fun fibSequenceDigit(n: Int): Int {
     when (n) {
-        1 -> return 1
-        2 -> return 1
+        1, 2 -> return 1
     }
     var k = 2
     var f1 = 1
