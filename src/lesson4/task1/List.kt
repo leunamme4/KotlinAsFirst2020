@@ -344,7 +344,7 @@ fun russian(n: Int): String {
         n1 /= 10
     }
     when {
-        k == 1 -> ones[n]
+        k == 1 -> return ones[n].trim()
         k == 2 && n / 10 == 1 -> return (dozens2[n % 10]).trim()
         k == 2 -> return (dozens[n / 10] + " " + ones[n % 10]).trim()
         k == 3 && (n % 100) / 10 == 1 -> return (hundreds[n / 100] + dozens2[n % 10]).trim()
