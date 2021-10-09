@@ -3,6 +3,7 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -124,11 +125,10 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
 fun abs(v: List<Double>): Double {
     var sqrSum = 0.0
     if (v.isEmpty()) return 0.0
-    else if (v.size == 1) return v[0]
-    else
-        for (i in v.indices) {
-            sqrSum += v[i] * v[i]
-        }
+    else if (v.size == 1) return abs(v[0])
+    for (i in v.indices) {
+        sqrSum += v[i] * v[i]
+    }
     return sqrSum.pow(0.5)
 
 }
