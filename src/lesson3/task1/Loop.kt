@@ -113,7 +113,7 @@ fun minDivisor(n: Int): Int {
     if (n % 2 == 0)
         return 2
     else
-        for (i in 3..(n / 5) step 2)
+        for (i in (3..(n / 3)) step 2)
             if (n % i == 0)
                 return i
     return n

@@ -94,12 +94,11 @@ fun timeForHalfWay(t1: Double, v1: Double, t2: Double, v2: Double, t3: Double, v
  * и 3, если угроза от обеих ладей.
  * Считать, что ладьи не могут загораживать друг друга
  */
-fun whichRookThreatens(kingX: Int, kingY: Int, rookX1: Int, rookY1: Int, rookX2: Int, rookY2: Int): Int {
-    return if (((rookX1 == kingX) || (rookY1 == kingY)) && ((rookX2 == kingX) || (rookY2 == kingY))) 3
+fun whichRookThreatens(kingX: Int, kingY: Int, rookX1: Int, rookY1: Int, rookX2: Int, rookY2: Int): Int =
+    if (((rookX1 == kingX) || (rookY1 == kingY)) && ((rookX2 == kingX) || (rookY2 == kingY))) 3
     else if (((rookX1 == kingX) || (rookY1 == kingY)) && ((rookX2 != kingX) || (rookY2 != kingY))) 1
     else if (((rookX2 == kingX) || (rookY2 == kingY)) && ((rookX1 != kingX) || (rookY1 != kingY))) 2
     else 0
-}
 
 /**
  * Простая (2 балла)
@@ -111,12 +110,11 @@ fun whichRookThreatens(kingX: Int, kingY: Int, rookX1: Int, rookY1: Int, rookX2:
  * и 3, если угроза есть и от ладьи и от слона.
  * Считать, что ладья и слон не могут загораживать друг друга.
  */
-fun rookOrBishopThreatens(kingX: Int, kingY: Int, rookX: Int, rookY: Int, bishopX: Int, bishopY: Int): Int {
-    return if (((rookX == kingX) || (rookY == kingY)) && ((kingX - bishopX) * (kingX - bishopX) == (kingY - bishopY) * (kingY - bishopY))) 3
+fun rookOrBishopThreatens(kingX: Int, kingY: Int, rookX: Int, rookY: Int, bishopX: Int, bishopY: Int): Int =
+    if (((rookX == kingX) || (rookY == kingY)) && ((kingX - bishopX) * (kingX - bishopX) == (kingY - bishopY) * (kingY - bishopY))) 3
     else if ((rookX == kingX) || (rookY == kingY)) 1
     else if ((kingX - bishopX) * (kingX - bishopX) == (kingY - bishopY) * (kingY - bishopY)) 2
     else 0
-}
 
 /**
  * Простая (2 балла)

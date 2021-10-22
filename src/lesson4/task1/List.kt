@@ -3,7 +3,6 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
-import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -125,7 +124,6 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
 fun abs(v: List<Double>): Double {
     var sqrSum = 0.0
     if (v.isEmpty()) return 0.0
-    else if (v.size == 1) return abs(v[0])
     for (i in v.indices) {
         sqrSum += v[i] * v[i]
     }
@@ -138,10 +136,9 @@ fun abs(v: List<Double>): Double {
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double {
-    return if (list.isEmpty()) 0.0
+fun mean(list: List<Double>): Double =
+    if (list.isEmpty()) 0.0
     else list.sum() / list.size
-}
 
 /**
  * Средняя (3 балла)
@@ -151,7 +148,14 @@ fun mean(list: List<Double>): Double {
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun center(list: MutableList<Double>): MutableList<Double> = TODO()
+fun center(list: MutableList<Double>): MutableList<Double> {
+    if (list.isEmpty()) return list
+    val mean = list.sum() / list.size
+    for (i in 0 until list.size) {
+        list[i] -= mean
+    }
+    return list
+}
 
 /**
  * Средняя (3 балла)
@@ -180,7 +184,7 @@ fun times(a: List<Int>, b: List<Int>): Int {
  */
 fun polynom(p: List<Int>, x: Int): Int {
     var pX = 0.0
-    val xCopy: Double = x.toDouble()
+    val xCopy = x.toDouble()
     if (p.isEmpty()) return 0
     pX += p[0]
     for (i in 1 until p.size) {
@@ -199,7 +203,14 @@ fun polynom(p: List<Int>, x: Int): Int {
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun accumulate(list: MutableList<Int>): MutableList<Int> = TODO()
+fun accumulate(list: MutableList<Int>): MutableList<Int> {
+    var sumList = 0
+    for (i in 1 until list.size) {
+        sumList = list[i] + list[i - 1]
+        list[i] = sumList
+    }
+    return list
+}
 
 /**
  * Средняя (3 балла)
@@ -208,7 +219,19 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> = TODO()
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = TODO()
+fun factorize(n: Int): List<Int> {
+    val list: MutableList<Int> = mutableListOf()
+    var nCopy = n
+    var i = 1
+    while (nCopy > 1) {
+        i++
+        while (nCopy % i == 0) {
+            list.add(i)
+            nCopy /= i
+        }
+    }
+    return list
+}
 
 /**
  * Сложная (4 балла)
@@ -217,7 +240,7 @@ fun factorize(n: Int): List<Int> = TODO()
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String = TODO()
+fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*")
 
 /**
  * Средняя (3 балла)
@@ -226,7 +249,15 @@ fun factorizeToString(n: Int): String = TODO()
  * Результат перевода вернуть в виде списка цифр в base-ичной системе от старшей к младшей,
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
-fun convert(n: Int, base: Int): List<Int> = TODO()
+fun convert(n: Int, base: Int): List<Int> {
+    val list: MutableList<Int> = mutableListOf()
+    var nCopy = n
+    while (nCopy > 0) {
+        list.add(0, nCopy % base)
+        nCopy /= base
+    }
+    return list
+}
 
 /**
  * Сложная (4 балла)
@@ -239,7 +270,25 @@ fun convert(n: Int, base: Int): List<Int> = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String {
+    val listBase: MutableList<String> = mutableListOf()
+    for (i in 'a'..'z') {
+        listBase.add(i.toString())
+    }
+    val list = convert(n, base).toMutableList()
+    val list1: MutableList<String> = mutableListOf()
+    for (i in list.indices) {
+        list1.add(list[i].toString())
+    }
+    for (i in list1.indices) {
+        if (list[i] > 9) {
+            list1.add(i, listBase[list1[i].toInt() - 10])
+            list1.remove(list1[i + 1])
+        }
+    }
+    return list1.joinToString(separator = "")
+}
+
 
 /**
  * Средняя (3 балла)
