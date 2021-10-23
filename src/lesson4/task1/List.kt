@@ -3,6 +3,7 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import lesson3.task1.digitNumber
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -150,9 +151,8 @@ fun mean(list: List<Double>): Double =
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     if (list.isEmpty()) return list
-    val mean = list.sum() / list.size
     for (i in 0 until list.size) {
-        list[i] -= mean
+        list[i] -= list.sum() / list.size
     }
     return list
 }
@@ -220,7 +220,7 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
-    val list: MutableList<Int> = mutableListOf()
+    val list = mutableListOf<Int>()
     var nCopy = n
     var i = 1
     while (nCopy > 1) {
@@ -250,13 +250,17 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
 fun convert(n: Int, base: Int): List<Int> {
-    val list: MutableList<Int> = mutableListOf()
+    val list = mutableListOf<Int>()
     var nCopy = n
+    if (n == 0) {
+        list.add(0)
+        return list
+    }
     while (nCopy > 0) {
-        list.add(0, nCopy % base)
+        list.add(nCopy % base)
         nCopy /= base
     }
-    return list
+    return list.reversed()
 }
 
 /**
@@ -271,20 +275,18 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    val listBase: MutableList<String> = mutableListOf()
+    if (n == 0)
+        return "0"
+    val listBase = mutableListOf<String>()
     for (i in 'a'..'z') {
         listBase.add(i.toString())
     }
     val list = convert(n, base).toMutableList()
-    val list1: MutableList<String> = mutableListOf()
+    val list1 = mutableListOf<String>()
     for (i in list.indices) {
-        list1.add(list[i].toString())
-    }
-    for (i in list1.indices) {
-        if (list[i] > 9) {
-            list1.add(i, listBase[list1[i].toInt() - 10])
-            list1.remove(list1[i + 1])
-        }
+        if (list[i] > 9)
+            list1.add(listBase[list[i] - 10])
+        else list1.add(list[i].toString())
     }
     return list1.joinToString(separator = "")
 }
@@ -297,7 +299,16 @@ fun convertToString(n: Int, base: Int): String {
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int {
+    var j = 1
+    var result = 0
+    val base1 = base.toDouble()
+    for (i in digits.indices) {
+        result += digits[i] * base1.pow(digits.size - j).toInt()
+        j++
+    }
+    return result
+}
 
 /**
  * Сложная (4 балла)
@@ -321,7 +332,21 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    val listDigits = listOf("0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX")
+    val listDozens = listOf("0", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC")
+    val listHundreds = listOf("0", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCC", "CM")
+    val listThousands = listOf("0", "M", "MM", "MMM")
+    return if (digitNumber(n) == 1)
+        listDigits[n]
+    else if (digitNumber(n) == 2)
+        (listDozens[n / 10] + listDigits[n % 10]).replace("0", "")
+    else if (digitNumber(n) == 3)
+        (listHundreds[n / 100] + listDozens[(n / 10) % 10] + listDigits[n % 10]).replace("0", "")
+    else
+        (listThousands[n / 1000] + listHundreds[(n / 100) % 10] + listDozens[(n / 10) % 10] +
+                listDigits[n % 10]).replace("0", "")
+}
 
 /**
  * Очень сложная (7 баллов)
