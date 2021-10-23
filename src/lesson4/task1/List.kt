@@ -149,13 +149,7 @@ fun mean(list: List<Double>): Double =
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun center(list: MutableList<Double>): MutableList<Double> {
-    if (list.isEmpty()) return list
-    for (i in 0 until list.size) {
-        list[i] -= list.sum() / list.size
-    }
-    return list
-}
+fun center(list: MutableList<Double>): MutableList<Double> = TODO()
 
 /**
  * Средняя (3 балла)
@@ -335,7 +329,7 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
 fun roman(n: Int): String {
     val listDigits = listOf("0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX")
     val listDozens = listOf("0", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC")
-    val listHundreds = listOf("0", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCC", "CM")
+    val listHundreds = listOf("0", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM")
     val listThousands = listOf("0", "M", "MM", "MMM")
     return if (digitNumber(n) == 1)
         listDigits[n]
