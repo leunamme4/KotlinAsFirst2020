@@ -231,7 +231,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
     }
     if (kindMap.isEmpty()) return null
     return kindMap.keys.toString().filterNot {
-        it == "["[0] || it == "]"[0]
+        it == "["[0] || it == "]"[0] || it == ", "[0]
     }
 }
 
@@ -245,7 +245,8 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    if (chars.isEmpty()) return false
+    if (chars.isEmpty() && word != "") return false
+    if ((chars.isEmpty() && word != "") && (word == "")) return true
     val wordSet = word.toCharArray().toSet()
     for (i in chars.indices) {
         if (chars[i] !in wordSet) {
@@ -346,6 +347,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     for (i in 0..(list.size - 2)) {
         for (j in 1 until list.size) {
+            if (i == j) continue
             if (list[i] + list[j] == number) return Pair(i, j)
         }
     }
