@@ -97,26 +97,32 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
+    val a0 = mutableListOf<String>()
+    val a1 = mutableListOf<String>()
     val a2 = mutableListOf<String>()
     val a3 = mutableListOf<String>()
     val a4 = mutableListOf<String>()
     val a5 = mutableListOf<String>()
     for ((a, b) in grades) {
         when (b) {
+            0 -> a2 += a
+            1 -> a2 += a
             2 -> a2 += a
             3 -> a3 += a
             4 -> a4 += a
             5 -> a5 += a
         }
     }
+    a0.toList()
+    a1.toList()
     a2.toList()
     a3.toList()
     a4.toList()
     a5.toList()
     val result = mutableMapOf<Int, List<String>>()
-    val lists = listOf(a2, a3, a4, a5)
-    for (i in 0..3) {
-        if (lists[i].isNotEmpty()) result[(i + 2)] = lists[i]
+    val lists = listOf(a0, a1, a2, a3, a4, a5)
+    for (i in 0..5) {
+        if (lists[i].isNotEmpty()) result[i] = lists[i]
     }
     return result.toMap()
 }
@@ -350,7 +356,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             var bv22 = Pair(0, 0)
             for ((c, d) in done) {
                 if ((newPrice - d.second + b.second > newPrice && newCapacity - d.first + b.first <= capacity
-                            && newPrice - d.second + b.second > newPrice - bestVariant1.second + b.second) || (d.second == b.second && d.first > b.first)
+                            && newPrice - d.second + b.second > newPrice - bestVariant1.second + b.second)
                 ) {
                     bestVariant = c
                     bestVariant1 = Pair(d.first, d.second)
@@ -360,7 +366,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
                             if (e != c && ((newPrice - d.second - f.second + b.second > newPrice
                                         && newCapacity - d.first - f.first + b.first <= capacity
                                         && newPrice - d.second - f.second + b.second > newPrice - bv11.second -
-                                        bv22.second + b.second) || (d.second + f.second == b.second && d.first + f.first > b.first))
+                                        bv22.second + b.second))
                             ) {
                                 bv1 = c
                                 bv11 = Pair(d.first, d.second)
@@ -394,5 +400,6 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     if (result.isEmpty()) return emptySet()
     return result.toSet()
 }
+
 
 
