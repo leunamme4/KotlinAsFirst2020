@@ -2,6 +2,9 @@
 
 package lesson5.task1
 
+import ru.spbstu.kotlin.typeclass.classes.Monoid.Companion.plus
+import kotlin.math.absoluteValue
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -97,32 +100,14 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
-    val a0 = mutableListOf<String>()
-    val a1 = mutableListOf<String>()
-    val a2 = mutableListOf<String>()
-    val a3 = mutableListOf<String>()
-    val a4 = mutableListOf<String>()
-    val a5 = mutableListOf<String>()
-    for ((a, b) in grades) {
-        when (b) {
-            0 -> a0 += a
-            1 -> a1 += a
-            2 -> a2 += a
-            3 -> a3 += a
-            4 -> a4 += a
-            5 -> a5 += a
-        }
-    }
-    a0.toList()
-    a1.toList()
-    a2.toList()
-    a3.toList()
-    a4.toList()
-    a5.toList()
     val result = mutableMapOf<Int, List<String>>()
-    val lists = listOf(a0, a1, a2, a3, a4, a5)
-    for (i in 0..5) {
-        if (lists[i].isNotEmpty()) result[i] = lists[i]
+    for ((a, b) in grades) {
+        if (result.containsKey(b)) {
+            val k = result[b]!!.toMutableList()
+            k.add(a)
+            result[b] = k.toList()
+        } else
+            result[b] = listOf(a)
     }
     return result.toMap()
 }
@@ -195,7 +180,29 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> = TODO()
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
+    val result = mutableMapOf<String, Double>()
+    val resultTimes = mutableMapOf<String, Double>()
+    val resultSum = mutableMapOf<String, Double>()
+    for ((a, b) in stockPrices) {
+        if (resultTimes.containsKey(a)) {
+            var k = resultTimes[a]!!
+            k += 1.0
+            resultTimes[a] = k
+            var sum = resultSum[a]!!
+            sum += b
+            resultSum[a] = sum
+        } else {
+            resultTimes[a] = 1.0
+            resultSum[a] = b
+            result[a] = 0.0
+        }
+    }
+    for (element in result) {
+        result[element.key] = resultSum[element.key]!! / resultTimes[element.key]!!
+    }
+    return result.toMap()
+}
 
 /**
  * Средняя (4 балла)
