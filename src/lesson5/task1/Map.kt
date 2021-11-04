@@ -341,7 +341,8 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val result = mutableSetOf<String>()
     var newCapacity = 0
     var newPrice = 0
-    val done = mutableMapOf<String, Pair<Int, Int>>()
+    val done =
+        mutableMapOf<String, Pair<Int, Int>>() // Здесь содержится то, что мы положили в рюкзак и в случае смены предметов перезаписывается
     for ((a, b) in treasures) {
         if (newCapacity + b.first <= capacity) {
             result += a
@@ -351,15 +352,37 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         } else {
             var bestVariant = ""
             var bestVariant1 = Pair(0, Int.MAX_VALUE)
+            // Лучшие варианты предмета, который можно будет вытащить
+            var bv1 = ""
+            var bv11 = Pair(0, Int.MAX_VALUE)
+            var bv2 = ""
+            var bv22 = Pair(0, Int.MAX_VALUE)
+            // Лучшие варианты предметов, которые мы можем вытащить, когда хотим вытащить 2 предмета и положить 1
             for ((c, d) in done) {
-                if ((newPrice - d.second + b.second > newPrice) && (newCapacity - d.first + b.first <= capacity)
-                    && (newPrice - d.second + b.second > newPrice - bestVariant1.second + b.second)
+                if ((newPrice - d.second + b.second > newPrice && newCapacity - d.first + b.first <= capacity
+                            && newPrice - d.second + b.second > newPrice - bestVariant1.second + b.second)
                 ) {
                     bestVariant = c
                     bestVariant1 = Pair(d.first, d.second)
+                } else {
+                    if (newPrice - d.second + b.second > newPrice && newCapacity - d.first + b.first > capacity) {
+                        for ((e, f) in done) {
+                            if (e != c && ((newPrice - d.second - f.second + b.second > newPrice
+                                        && newCapacity - d.first - f.first + b.first <= capacity
+                                        && newPrice - d.second - f.second + b.second > newPrice - bv11.second -
+                                        bv22.second + b.second))
+                            ) {
+                                bv1 = c
+                                bv11 = Pair(d.first, d.second)
+                                bv2 = e
+                                bv22 = Pair(f.first, f.second)
+                                // Ищу, можно ли выгодно вытащить 2 предмета из рюкзака, взамен положив туда один.
+                            }
+                        }
+                    }
                 }
             }
-            if (bestVariant != "") {
+            if ((newPrice - bestVariant1.second + b.second > newPrice - bv11.second - bv22.second + b.second) && bestVariant != "") {
                 result -= bestVariant
                 newCapacity -= bestVariant1.first - b.first
                 newPrice -= bestVariant1.second - b.second
@@ -367,10 +390,24 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
                 done[a] = b
                 result += a
             }
+            if ((newPrice - bestVariant1.second + b.second < newPrice - bv11.second - bv22.second + b.second) && (bestVariant != "" || bv1 != "")) {
+                result -= bv1
+                result -= bv2
+                newCapacity -= bv11.first + bv22.first - b.first
+                newPrice -= bv11.second + bv22.second - b.second
+                done[bv1] = Pair(Int.MIN_VALUE, Int.MAX_VALUE)
+                done[bv2] = Pair(Int.MIN_VALUE, Int.MAX_VALUE)
+                done[a] = b
+                result += a
+            }
+            // В 384-400 проверяю, выгоднее вытащить 1 предмет и положить один взамен или вытащить 2 предмета и
+            // положить один взамен (или же возможен только один из этих двух вариантов)
         }
     }
     if (result.isEmpty()) return emptySet()
     return result.toSet()
+    // Я не понимаю, что здесь не так, подозреваю условие e != c в 367 строке, но я не понимаю, как еще проверить,
+    // не будем ли мы при попытке вытащить 2 предмета из рюкзака вытаскивать два раза один и тот же предмет.
 }
 
 
