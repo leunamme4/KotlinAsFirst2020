@@ -96,7 +96,30 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
+fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
+    val a2 = mutableListOf<String>()
+    val a3 = mutableListOf<String>()
+    val a4 = mutableListOf<String>()
+    val a5 = mutableListOf<String>()
+    for ((a, b) in grades) {
+        when (b) {
+            2 -> a2 += a
+            3 -> a3 += a
+            4 -> a4 += a
+            5 -> a5 += a
+        }
+    }
+    a2.toList()
+    a3.toList()
+    a4.toList()
+    a5.toList()
+    val result = mutableMapOf<Int, List<String>>()
+    val lists = listOf(a2, a3, a4, a5)
+    for (i in 0..3) {
+        if (lists[i].isNotEmpty()) result[(i + 2)] = lists[i]
+    }
+    return result.toMap()
+}
 
 /**
  * Простая (2 балла)
@@ -277,7 +300,14 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    for (i in list.indices) {
+        for (k in (i + 1) until list.size) {
+            if (list[i] + list[k] == number) return Pair(minOf(i, k), maxOf(i, k))
+        }
+    }
+    return Pair(-1, -1)
+}
 
 /**
  * Очень сложная (8 баллов)
@@ -300,4 +330,69 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val result = mutableSetOf<String>()
+    var newCapacity = 0
+    var newPrice = 0
+    val done = mutableMapOf<String, Pair<Int, Int>>()
+    for ((a, b) in treasures) {
+        if (newCapacity + b.first <= capacity) {
+            result += a
+            newCapacity += b.first
+            newPrice += b.second
+            done[a] = b
+        } else {
+            var bestVariant = ""
+            var bestVariant1 = Pair(0, 0)
+            var bv1 = ""
+            var bv11 = Pair(0, 0)
+            var bv2 = ""
+            var bv22 = Pair(0, 0)
+            for ((c, d) in done) {
+                if ((newPrice - d.second + b.second > newPrice && newCapacity - d.first + b.first <= capacity
+                            && newPrice - d.second + b.second > newPrice - bestVariant1.second + b.second) || (d.second == b.second && d.first > b.first)
+                ) {
+                    bestVariant = c
+                    bestVariant1 = Pair(d.first, d.second)
+                } else {
+                    if (newPrice - d.second + b.second > newPrice && newCapacity - d.first + b.first > capacity) {
+                        for ((e, f) in done) {
+                            if (e != c && ((newPrice - d.second - f.second + b.second > newPrice
+                                        && newCapacity - d.first - f.first + b.first <= capacity
+                                        && newPrice - d.second - f.second + b.second > newPrice - bv11.second -
+                                        bv22.second + b.second) || (d.second + f.second == b.second && d.first + f.first > b.first))
+                            ) {
+                                bv1 = c
+                                bv11 = Pair(d.first, d.second)
+                                bv2 = e
+                                bv22 = Pair(f.first, f.second)
+                            }
+                        }
+                    }
+                }
+            }
+            if (newPrice - bestVariant1.second + b.second > newPrice - bv11.second - bv22.second + b.second) {
+                result -= bestVariant
+                newCapacity -= bestVariant1.first - b.first
+                newPrice -= bestVariant1.second - b.second
+                done[bestVariant] = Pair(bestVariant1.first, Int.MAX_VALUE)
+                done[a] = b
+                result += a
+            }
+            if (newPrice - bestVariant1.second + b.second < newPrice - bv11.second - bv22.second + b.second) {
+                result -= bv1
+                result -= bv2
+                newCapacity -= bv11.first + bv22.first - b.first
+                newPrice -= bv11.second + bv22.second - b.second
+                done[bv1] = Pair(bv11.first, Int.MAX_VALUE)
+                done[bv2] = Pair(bv22.first, Int.MAX_VALUE)
+                done[a] = b
+                result += a
+            }
+        }
+    }
+    if (result.isEmpty()) return emptySet()
+    return result.toSet()
+}
+
+

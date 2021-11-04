@@ -74,7 +74,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    var l = n
+    var l = abs(n)
     var k = 0
     if (l == 0) return 1
     while (l > 0) {
@@ -94,7 +94,17 @@ fun fib(n: Int): Int {
     when (n) {
         1, 2 -> return 1
     }
-    return fib(n - 1) + fib(n - 2)
+    var numb1 = 1
+    var numb2 = 1
+    var result = 0
+    var k = 3
+    while (k <= n) {
+        result = numb1 + numb2
+        numb1 = numb2
+        numb2 = result
+        k += 1
+    }
+    return result
 }
 
 /**
@@ -194,17 +204,7 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double {
-    if (x == 0.0 || (x / PI == round(x / PI))) return 0.0
-    var sinus = x
-    var factNumber = 3
-    while (x.pow(factNumber) / factorial(factNumber) >= eps) {
-        if (factNumber % 4 == 3) sinus -= x.pow(factNumber) / factorial(factNumber)
-        else sinus += x.pow(factNumber) / factorial(factNumber)
-        factNumber += 2
-    }
-    return sinus
-}
+fun sin(x: Double, eps: Double): Double = TODO()
 
 /**
  * Средняя (4 балла)
@@ -215,18 +215,7 @@ fun sin(x: Double, eps: Double): Double {
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
-fun cos(x: Double, eps: Double): Double {
-    if (x == 0.0 || ((x / PI == round(x / PI)) && (x / PI % 2) == 0.0)) return 1.0
-    if ((x / PI == round(x / PI)) && (x / PI % 2) == 1.0) return -1.0
-    var cosinus = 1.0
-    var factNumber = 2
-    while (x.pow(factNumber) / factorial(factNumber) >= eps) {
-        if (factNumber % 4 == 2) cosinus -= x.pow(factNumber) / factorial(factNumber)
-        else cosinus += x.pow(factNumber) / factorial(factNumber)
-        factNumber += 2
-    }
-    return cosinus
-}
+fun cos(x: Double, eps: Double): Double = TODO()
 
 /**
  * Сложная (4 балла)
