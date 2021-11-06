@@ -121,8 +121,11 @@ fun dateDigitToStr(digital: String): String {
         || parts[0].length > 2
     ) return ""
     val month = parts[1].replace("0", "").toInt()
+    var day = parts[0]
+    if (day[0] == '0')
+        day = day[1].toString()
     if (parts[0].toInt() > monthDays(month, parts[2].toInt()) || parts[2].toInt() < 0) return ""
-    return String.format("%s %s %s", parts[0].replace("0", ""), months[parts[1]], parts[2])
+    return String.format("%s %s %s", day, months[parts[1]], parts[2])
 }
 
 /**
@@ -153,7 +156,7 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  */
 fun bestLongJump(jumps: String): Int {
     val parts = jumps.split(" ").toMutableList()
-    val reg = "[^-%0123456789]".toRegex()
+    val reg = "[^-%0123456789]+".toRegex()
     for (i in parts.indices) {
         if (reg.matches(parts[i])) return -1
     }
