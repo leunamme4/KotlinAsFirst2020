@@ -100,10 +100,11 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val result = mutableMapOf<Int, MutableList<String>>()
-    for ((name, grade) in grades)
-        if ((result[grade] == null) or (result[grade]?.isEmpty() == true))
+    for ((name, grade) in grades) {
+        if (result[grade].isNullOrEmpty())
             result[grade] = mutableListOf(name)
-        else result[grade]?.add(name)
+        else result[grade]!!.add(name)
+    }
     return result
 }
 
@@ -211,19 +212,16 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     val kindMap = mutableMapOf<String, Pair<String, Double>>()
-    var minPair = MAX_VALUE
+    var minPair = MAX_VALUE.toDouble()
     for ((name, pair) in stuff) {
-        if (pair.first == kind) {
-            if (pair.second < minPair) {
-                kindMap[name] = pair
-                minPair = pair.second.toInt()
-            }
+        if (pair.first == kind && pair.second <= minPair) {
+            kindMap.clear()
+            kindMap[name] = pair
+            minPair = pair.second
         }
     }
     if (kindMap.isEmpty()) return null
-    return kindMap.keys.toString().filterNot {
-        it == "["[0] || it == "]"[0] || it == ", "[0]
-    }
+    return kindMap.keys.joinToString()
 }
 
 /**
@@ -235,17 +233,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    if (chars.isEmpty() && word != "") return false
-    if (((chars.isNotEmpty()) && (word == "")) || ((chars.isEmpty()) && (word == ""))) return true
-    val wordSet = word.toCharArray().toSet()
-    for (i in chars.indices) {
-        if (chars[i] !in wordSet) {
-            return false
-        }
-    }
-    return true
-}
+fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
 
 /**
  * Средняя (4 балла)
@@ -260,12 +248,12 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
 fun extractRepeats(list: List<String>): Map<String, Int> {
-    val repeatMap = mutableMapOf<String, Int>()
+    val repeats = mutableMapOf<String, Int>()
     for (i in list) {
-        if (list.count { it == i } != 1)
-            repeatMap[i] = list.count { it == i }
+        if (i !in repeats) repeats[i] = 1
+        else repeats[i] = repeats.getValue(i) + 1
     }
-    return repeatMap
+    return repeats.filter { (_, v) -> v > 1 }
 }
 
 /**
@@ -336,11 +324,10 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    for (i in 0..(list.size - 2)) {
-        for (j in 1 until list.size) {
-            if (i == j) continue
-            if (list[i] + list[j] == number) return Pair(i, j)
-        }
+    val digitToIndex = mutableMapOf<Int, Int>()
+    for (i in list.indices) {
+        if (digitToIndex[number - list[i]] != null) return Pair(digitToIndex[number - list[i]]!!, i)
+        digitToIndex[list[i]] = i
     }
     return Pair(-1, -1)
 }
