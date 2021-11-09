@@ -2,8 +2,6 @@
 
 package lesson5.task1
 
-import kotlin.Int.Companion.MAX_VALUE
-
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -211,17 +209,17 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    val kindMap = mutableMapOf<String, Pair<String, Double>>()
-    var minPair = MAX_VALUE.toDouble()
+    val nameList = mutableListOf<String>()
+    var minPair = Double.MAX_VALUE
     for ((name, pair) in stuff) {
         if (pair.first == kind && pair.second <= minPair) {
-            kindMap.clear()
-            kindMap[name] = pair
+            nameList.clear()
+            nameList.add(name)
             minPair = pair.second
         }
     }
-    if (kindMap.isEmpty()) return null
-    return kindMap.keys.joinToString()
+    if (nameList.isEmpty()) return null
+    return nameList[0]
 }
 
 /**
@@ -251,7 +249,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
     val repeats = mutableMapOf<String, Int>()
     for (i in list) {
         if (i !in repeats) repeats[i] = 1
-        else repeats[i] = repeats.getValue(i) + 1
+        else repeats[i] = repeats[i]!! + 1
     }
     return repeats.filter { (_, v) -> v > 1 }
 }

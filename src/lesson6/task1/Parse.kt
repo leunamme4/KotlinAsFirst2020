@@ -116,8 +116,8 @@ fun dateDigitToStr(digital: String): String {
         "12" to "декабря"
     )
     val parts = digital.split(".")
-    val reg = "[a-zA-Z]+".toRegex()
-    if (parts.size != 3 || parts[1] !in months.keys || reg.matches(parts[0]) || reg.matches(parts[2])
+    val reg = "[0-9]+".toRegex()
+    if (parts.size != 3 || parts[1] !in months.keys || !reg.matches(parts[0]) || !reg.matches(parts[2])
         || parts[0].length > 2
     ) return ""
     val month = parts[1].replace("0", "").toInt()
@@ -156,16 +156,17 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  */
 fun bestLongJump(jumps: String): Int {
     val parts = jumps.split(" ").toMutableList()
-    val reg = "[^-%0123456789]+".toRegex()
-    for (i in parts.indices) {
-        if (reg.matches(parts[i])) return -1
+    val reg = "[-%0-9]+".toRegex()
+    for (i in parts) {
+        if (!reg.matches(i)) return -1
     }
     parts.removeAll { it == "-" || it == "%" }
     var maxJump = 0
     return if (parts.isNotEmpty()) {
         for (i in parts.indices) {
-            if (parts[i].toInt() > maxJump)
-                maxJump = parts[i].toInt()
+            val attempt = parts[i].toInt()
+            if (attempt > maxJump)
+                maxJump = attempt
         }
         maxJump
     } else -1
@@ -184,17 +185,14 @@ fun bestLongJump(jumps: String): Int {
  */
 fun bestHighJump(jumps: String): Int {
     val parts = jumps.split(" ").toMutableList()
-    val reg = "[^-+%0123456789]+".toRegex()
-    for (i in parts.indices) {
-        if (reg.matches(parts[i])) return -1
+    val reg = "[-+%0-9]+".toRegex()
+    for (i in parts) {
+        if (!reg.matches(i)) return -1
     }
     val success = mutableListOf<Int>()
-    if (parts.size == 2 && parts[1] == "+") return parts[0].toInt()
-    else {
-        for (i in 0..(parts.size - 2)) {
-            if ('+' in parts[i + 1])
-                success.add(parts[i].toInt())
-        }
+    for (i in 0..(parts.size - 2)) {
+        if ('+' in parts[i + 1])
+            success.add(parts[i].toInt())
     }
     var maxJump = 0
     return if (success.isNotEmpty()) {
