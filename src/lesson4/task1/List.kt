@@ -355,6 +355,8 @@ fun russian(n: Int): String {
                 hundreds[(n % 1000) / 100] + dozens2[n % 10]).trim()
         k == 4 && n / 1000 == 1 -> return ("тысяча " + hundreds[(n % 1000) / 100] +
                 dozens[(n % 100) / 10] + ones[n % 10]).trim()
+        k == 4 && (n % 100) / 10 == 1 -> return (onesForThousands[n / 1000] + hundreds[(n % 1000) / 100] +
+                dozens2[n % 10]).trim()
         k == 4 -> return (onesForThousands[n / 1000] + hundreds[(n % 1000) / 100] +
                 dozens[(n % 100) / 10] + ones[n % 10]).trim()
         k == 5 && n / 10000 == 1 && (n % 100) / 10 == 1 -> return (dozens2[(n % 10000) / 1000] + "тысяч " +
