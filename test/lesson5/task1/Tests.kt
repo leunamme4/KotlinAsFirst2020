@@ -316,6 +316,15 @@ class Tests {
             Pair(-1, -1),
             findSumOfTwo(listOf(1, 2, 3), 6)
         )
+        assertEquals(
+            Pair(0, 5),
+            findSumOfTwo(listOf(0, 3, 3, 8, 5, 0, 4), 0)
+        )
+        assertEquals(
+            Pair(-1, -1),
+            findSumOfTwo(listOf(0, 3, 3, 8, 5, 0, 4), -5)
+        )
+
     }
 
     @Test
