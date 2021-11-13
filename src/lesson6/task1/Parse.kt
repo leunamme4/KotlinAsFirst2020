@@ -161,15 +161,12 @@ fun bestLongJump(jumps: String): Int {
         if (!reg.matches(i)) return -1
     }
     parts.removeAll { it == "-" || it == "%" }
-    var maxJump = 0
-    return if (parts.isNotEmpty()) {
-        for (i in parts.indices) {
-            val attempt = parts[i].toInt()
-            if (attempt > maxJump)
-                maxJump = attempt
-        }
-        maxJump
-    } else -1
+    var maxJump = -1
+    for (i in parts.indices) {
+        val attempt = parts[i].toInt()
+        if (attempt > maxJump) maxJump = attempt
+    }
+    return maxJump
 }
 
 /**
@@ -184,7 +181,7 @@ fun bestLongJump(jumps: String): Int {
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    val parts = jumps.split(" ").toMutableList()
+    val parts = jumps.split(" ")
     val reg = "[-+%0-9]+".toRegex()
     for (i in parts) {
         if (!reg.matches(i)) return -1
@@ -194,14 +191,12 @@ fun bestHighJump(jumps: String): Int {
         if ('+' in parts[i + 1])
             success.add(parts[i].toInt())
     }
-    var maxJump = 0
-    return if (success.isNotEmpty()) {
-        for (i in success.indices) {
-            if (success[i] > maxJump)
-                maxJump = success[i]
-        }
-        maxJump
-    } else -1
+    var maxJump = -1
+    for (i in success.indices) {
+        if (success[i] > maxJump)
+            maxJump = success[i]
+    }
+    return maxJump
 }
 
 /**
@@ -213,7 +208,16 @@ fun bestHighJump(jumps: String): Int {
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    val reg = "( [0-9]+ [+-])+".toRegex()
+    if (!reg.matches(" $expression -")) throw IllegalArgumentException(expression)
+    val parts = expression.split(" ")
+    var result = parts[0].toInt()
+    for (i in 1 until parts.size)
+        if ((parts[i] == "+")) result += parts[i + 1].toInt()
+        else if ((parts[i] == "-")) result -= parts[i + 1].toInt()
+    return result
+}
 
 /**
  * Сложная (6 баллов)
