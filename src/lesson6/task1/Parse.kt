@@ -2,8 +2,6 @@
 
 package lesson6.task1
 
-import lesson3.task1.digitNumber
-
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
 // Рекомендуемое количество баллов = 11
@@ -95,7 +93,7 @@ fun dateStrToDigit(str: String): String {
     val day = parts[0].toInt()
     val month = months[parts[1]]
     val year = parts[2].toInt()
-    return if (day > monthDays(month!!, year) || digitNumber(day) > 2 || year < 0 || day !in 1..31) ""
+    return if (day > monthDays(month!!, year) || year < 0 || day !in 1..31) ""
     else String.format("%02d.%02d.%d", day, month, year)
 }
 
@@ -120,11 +118,12 @@ fun dateDigitToStr(digital: String): String {
     if (parts.size != 3 || parts[1] !in months.keys || !reg.matches(parts[0]) || !reg.matches(parts[2])
         || parts[0].length > 2
     ) return ""
-    val month = parts[1].replace("0", "").toInt()
+    val month = parts[1]
+    if (month[0] == '0') month.replace("0", "")
     var day = parts[0]
     if (day[0] == '0')
         day = day[1].toString()
-    if (parts[0].toInt() > monthDays(month, parts[2].toInt()) || parts[2].toInt() < 0) return ""
+    if (parts[0].toInt() > monthDays(month.toInt(), parts[2].toInt()) || parts[2].toInt() < 0) return ""
     return String.format("%s %s %s", day, months[parts[1]], parts[2])
 }
 
@@ -162,8 +161,8 @@ fun bestLongJump(jumps: String): Int {
     }
     parts.removeAll { it == "-" || it == "%" }
     var maxJump = -1
-    for (i in parts.indices) {
-        val attempt = parts[i].toInt()
+    for (i in parts) {
+        val attempt = i.toInt()
         if (attempt > maxJump) maxJump = attempt
     }
     return maxJump
