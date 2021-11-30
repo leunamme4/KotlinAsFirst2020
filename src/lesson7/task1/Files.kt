@@ -67,20 +67,21 @@ fun deleteMarked(inputName: String, outputName: String) {
     for (line in File(inputName).readLines()) {
         if (line.isEmpty()) {
             writer.newLine()
-            writer.newLine()
             continue
         }
         var k = 1
-        for (word in line.split(" ")) {
-            if (word.startsWith("_") && k == 1) {
+        val a = line.split(" ")
+        for (i in a.indices) {
+            if (a[i].startsWith("_") && k == 1) {
                 break
             }
-            if (k == 1) writer.write(word)
+            if (k == 1) writer.write(a[i])
             else {
                 writer.write(" ")
-                writer.write(word)
+                writer.write(a[i])
             }
             k = 0
+            if (i == a.lastIndex) writer.newLine()
         }
     }
     writer.close()
@@ -97,9 +98,9 @@ fun deleteMarked(inputName: String, outputName: String) {
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val answer = mutableMapOf<String, Int>()
-    for (element in substrings) answer[element] = 0
+    for (element in substrings.distinct()) answer[element] = 0
     File(inputName).forEachLine {
-        for (string in substrings) {
+        for (string in substrings.distinct()) {
             if (it.isEmpty()) continue
             val lineSplit = it.split("").toMutableList()
             var number = 0
@@ -163,7 +164,7 @@ fun sibilants(inputName: String, outputName: String) {
  */
 fun centerFile(inputName: String, outputName: String) {
     var max = 0
-    for (line in File(inputName).readLines()) if (line.length > max) max = line.length
+    for (line in File(inputName).readLines()) if (line.trim().length > max) max = line.length
     val writer = File(outputName).bufferedWriter()
     for (line in File(inputName).readLines()) {
         val thisLine = line.trim()
