@@ -69,20 +69,9 @@ fun deleteMarked(inputName: String, outputName: String) {
             writer.newLine()
             continue
         }
-        var k = 1
-        val a = line.split(" ")
-        for (i in a.indices) {
-            if (a[i].startsWith("_") && k == 1) {
-                break
-            }
-            if (k == 1) writer.write(a[i])
-            else {
-                writer.write(" ")
-                writer.write(a[i])
-            }
-            k = 0
-            if (i == a.lastIndex) writer.newLine()
-        }
+        if (line.startsWith('_')) continue
+        writer.write(line)
+        writer.newLine()
     }
     writer.close()
 }
@@ -102,13 +91,9 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     File(inputName).forEachLine {
         for (string in substrings.distinct()) {
             if (it.isEmpty()) continue
-            val lineSplit = it.split("").toMutableList()
+            val lineSplit = it.toMutableList()
             var number = 0
-            val stringSplit = string.split("").toMutableList()
-            lineSplit.removeAt(0)
-            lineSplit.removeAt(lineSplit.size - 1)
-            stringSplit.removeAt(0)
-            stringSplit.removeAt(stringSplit.size - 1)
+            val stringSplit = string.toMutableList()
             for (i in lineSplit.indices) {
                 var j = i
                 for (k in stringSplit.indices) {
@@ -116,7 +101,6 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
                         if (lineSplit[j].equals(stringSplit[k], ignoreCase = true)) {
                             if (k == stringSplit.lastIndex) number += 1
                             j += 1
-                            continue
                         } else break
                     }
                 }
@@ -164,9 +148,13 @@ fun sibilants(inputName: String, outputName: String) {
  */
 fun centerFile(inputName: String, outputName: String) {
     var max = 0
-    for (line in File(inputName).readLines()) if (line.trim().length > max) max = line.trim().length
-    val writer = File(outputName).bufferedWriter()
+    val listFile = mutableListOf<String>()
     for (line in File(inputName).readLines()) {
+        listFile += line
+        if (line.trim().length > max) max = line.trim().length
+    }
+    val writer = File(outputName).bufferedWriter()
+    for (line in listFile) {
         val thisLine = line.trim()
         val difference = max - thisLine.length
         writer.write(thisLine.padStart(thisLine.length + difference / 2, ' '))
@@ -205,32 +193,37 @@ fun centerFile(inputName: String, outputName: String) {
 fun alignFileByWidth(inputName: String, outputName: String) {
     var max = 0
     val regex = "[ ]+".toRegex()
+    val listFile = mutableListOf<String>()
     for (line in File(inputName).readLines()) {
+        listFile += line
         val thisLine = line.trim().split(regex).joinToString(" ")
         if (thisLine.length > max) max = thisLine.length
     }
     val writer = File(outputName).bufferedWriter()
-    for (line in File(inputName).readLines()) {
+    for (line in listFile) {
         if (line.isEmpty() || regex.matches(line)) writer.newLine()
-        else if (line.trim().split(regex).size == 1) {
-            writer.write(line.trim())
-            writer.newLine()
-        } else {
-            val thisLine = line.trim().split(regex).toMutableList()
-            var difference = max - thisLine.joinToString("").length
-            fun spaceMaker(list: List<String>): List<String> {
-                for (i in list.indices) {
-                    if (i == list.lastIndex) {
-                        if (difference > 0) spaceMaker(list)
-                        else break
+        else {
+            val lineT = line.trim()
+            if (lineT.split(regex).size == 1) {
+                writer.write(lineT)
+                writer.newLine()
+            } else {
+                val thisLine = lineT.split(regex).toMutableList()
+                var difference = max - thisLine.joinToString("").length
+                fun spaceMaker(list: List<String>): List<String> {
+                    for (i in list.indices) {
+                        if (i == list.lastIndex) {
+                            if (difference > 0) spaceMaker(list)
+                            else break
+                        }
+                        if (difference > 0) thisLine[i] += " "
+                        difference -= 1
                     }
-                    if (difference > 0) thisLine[i] += " "
-                    difference -= 1
+                    return list
                 }
-                return list
+                writer.write(spaceMaker(thisLine).joinToString(""))
+                writer.newLine()
             }
-            writer.write(spaceMaker(thisLine).joinToString(""))
-            writer.newLine()
         }
     }
     writer.close()
