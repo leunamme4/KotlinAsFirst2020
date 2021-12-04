@@ -86,7 +86,8 @@ fun deleteMarked(inputName: String, outputName: String) {
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val inputFile = File(inputName).readText()
     val repeats = mutableMapOf<String, Int>()
-    for (i in substrings) {
+    val unrepeatedSubstrings = substrings.toSet().toList()
+    for (i in unrepeatedSubstrings) {
         if (i !in repeats)
             repeats[i] = 0
         for (j in inputFile.indices) {
@@ -133,17 +134,16 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    val inputFile = File(inputName)
-    val outputFile = File(outputName).bufferedWriter()
-    var maxLength = 0
-    for (line in inputFile.readLines()) {
-        val line1 = line.trim(' ')
-        if (line1.length > maxLength) maxLength = line1.length
-    }
-    for (line in inputFile.readLines()) {
+    val textToList = mutableListOf<String>()
+    for (line in File(inputName).readLines()) {
         val withoutSpaces = line.trim(' ')
-        val diff = maxLength - withoutSpaces.length
-        outputFile.write(withoutSpaces.padStart(withoutSpaces.length + diff / 2))
+        textToList.add(withoutSpaces)
+    }
+    val maxLength = textToList.maxOf { it.length }
+    val outputFile = File(outputName).bufferedWriter()
+    for (line in textToList) {
+        val diff = maxLength - line.length
+        outputFile.write(line.padStart(line.length + diff / 2))
         outputFile.newLine()
     }
     outputFile.close()
@@ -177,22 +177,21 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    val inputFile = File(inputName)
-    val outputFile = File(outputName).bufferedWriter()
-    var maxLength = 0
-    for (line in inputFile.readLines()) {
-        val line1 = line.trim(' ').replace("[ ]+".toRegex(), " ")
-        if (line1.length > maxLength) maxLength = line1.length
+    val textToList = mutableListOf<String>()
+    for (line in File(inputName).readLines()) {
+        val withoutSpaces = line.trim(' ').replace("[ ]+".toRegex(), " ")
+        textToList.add(withoutSpaces)
     }
-    for (line in inputFile.readLines()) {
-        val withOneSpace = line.trim(' ').replace("[ ]+".toRegex(), " ")
-        val words = withOneSpace.split(" ").toMutableList()
+    var maxLength = textToList.maxOf { it.length }
+    val outputFile = File(outputName).bufferedWriter()
+    for (line in textToList) {
+        val words = line.split(" ").toMutableList()
         if (line.isBlank()) outputFile.newLine()
         else if (words.size == 1) {
-            outputFile.write(withOneSpace)
+            outputFile.write(line)
             outputFile.newLine()
         } else {
-            var remainingSpaces = maxLength - withOneSpace.length
+            var remainingSpaces = maxLength - line.length
             var i = 0
             while (remainingSpaces > 0) {
                 words[i] += " "
@@ -510,4 +509,3 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     TODO()
 }
-
