@@ -138,10 +138,10 @@ fun centerFile(inputName: String, outputName: String) {
     for (line in File(inputName).readLines()) {
         textToList.add(line.trim(' '))
     }
-    val maxLength = textToList.maxOfOrNull { it.length }
     val outputFile = File(outputName).bufferedWriter()
-    for (line in textToList) {
-        if (maxLength != null) {
+    if (textToList.isNotEmpty()) {
+        val maxLength = textToList.maxOf { it.length }
+        for (line in textToList) {
             val diff = maxLength - line.length
             outputFile.write(line.padStart(line.length + diff / 2))
             outputFile.newLine()
