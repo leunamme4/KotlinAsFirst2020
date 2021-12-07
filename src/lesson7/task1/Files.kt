@@ -135,17 +135,17 @@ fun sibilants(inputName: String, outputName: String) {
  */
 fun centerFile(inputName: String, outputName: String) {
     val textToList = mutableListOf<String>()
+    var maxLength = 0
     for (line in File(inputName).readLines()) {
-        textToList.add(line.trim(' '))
+        val line1 = line.trim(' ')
+        if (line1.length > maxLength) maxLength = line1.length
+        textToList.add(line1)
     }
     val outputFile = File(outputName).bufferedWriter()
-    if (textToList.isNotEmpty()) {
-        val maxLength = textToList.maxOf { it.length }
-        for (line in textToList) {
-            val diff = maxLength - line.length
-            outputFile.write(line.padStart(line.length + diff / 2))
-            outputFile.newLine()
-        }
+    for (line in textToList) {
+        val diff = maxLength - line.length
+        outputFile.write(line.padStart(line.length + diff / 2))
+        outputFile.newLine()
     }
     outputFile.close()
 }
