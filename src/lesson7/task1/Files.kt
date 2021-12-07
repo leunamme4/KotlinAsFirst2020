@@ -179,11 +179,12 @@ fun centerFile(inputName: String, outputName: String) {
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
     val textToList = mutableListOf<String>()
+    var maxLength = 0
     for (line in File(inputName).readLines()) {
         val withoutSpaces = line.trim(' ').replace("[ ]+".toRegex(), " ")
+        if (withoutSpaces.length > maxLength) maxLength = withoutSpaces.length
         textToList.add(withoutSpaces)
     }
-    var maxLength = textToList.maxOf { it.length }
     val outputFile = File(outputName).bufferedWriter()
     for (line in textToList) {
         val words = line.split(" ").toMutableList()
