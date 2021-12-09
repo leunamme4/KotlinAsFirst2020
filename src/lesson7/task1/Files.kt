@@ -2,6 +2,8 @@
 
 package lesson7.task1
 
+import ru.spbstu.wheels.isNotEmpty
+import ru.spbstu.wheels.stack
 import java.io.File
 
 // Урок 7: работа с файлами
@@ -150,14 +152,13 @@ fun centerFile(inputName: String, outputName: String) {
     var max = 0
     val listFile = mutableListOf<String>()
     for (line in File(inputName).readLines()) {
-        listFile += line
+        listFile += line.trim()
         if (line.trim().length > max) max = line.trim().length
     }
     val writer = File(outputName).bufferedWriter()
     for (line in listFile) {
-        val thisLine = line.trim()
-        val difference = max - thisLine.length
-        writer.write(thisLine.padStart(thisLine.length + difference / 2, ' '))
+        val difference = max - line.length
+        writer.write(line.padStart(line.length + difference / 2, ' '))
         writer.newLine()
     }
     writer.close()
@@ -195,7 +196,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     val regex = "[ ]+".toRegex()
     val listFile = mutableListOf<String>()
     for (line in File(inputName).readLines()) {
-        listFile += line
+        listFile += line.trim()
         val thisLine = line.trim().split(regex).joinToString(" ")
         if (thisLine.length > max) max = thisLine.length
     }
@@ -203,12 +204,11 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     for (line in listFile) {
         if (line.isEmpty() || regex.matches(line)) writer.newLine()
         else {
-            val lineT = line.trim()
-            if (lineT.split(regex).size == 1) {
-                writer.write(lineT)
+            if (line.split(regex).size == 1) {
+                writer.write(line)
                 writer.newLine()
             } else {
-                val thisLine = lineT.split(regex).toMutableList()
+                val thisLine = line.split(regex).toMutableList()
                 var difference = max - thisLine.joinToString("").length
                 fun spaceMaker(list: List<String>): List<String> {
                     for (i in list.indices) {
@@ -364,7 +364,68 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val tags = stack<String>()
+    val html = File(outputName).bufferedWriter()
+    val countList = mutableListOf(0, 0, 0, 0)
+    html.write("<html><body><p>")
+    tags.push("</html>")
+    tags.push("</body>")
+    tags.push("</p>")
+    val inpFile = mutableListOf<String>()
+    for (line in File(inputName).readLines()) {
+        inpFile += line
+    }
+    for (line in inpFile) {
+        if (line.isEmpty()) {
+            if (inpFile.indexOf(line) != inpFile.lastIndex) {
+                html.write(tags.pop())
+                html.write("<p>")
+                tags.push("</p>")
+                continue
+            } else html.write(tags.pop())
+        }
+        val lineList = line.toMutableList().map { it.toString() }.toMutableList()
+        for (i in 0 until (lineList.size - 1)) {
+            val other = lineList[i] + lineList[i + 1]
+            if (other == "~~") {
+                if (countList[0] == 0) {
+                    lineList[i] = "<s>"
+                    lineList[i + 1] = ""
+                    countList[0] = 1
+                    tags.push("</s>")
+                } else {
+                    lineList[i] = tags.pop()
+                    lineList[i + 1] = ""
+                    countList[0] = 0
+                }
+            }
+            if (other == "**") {
+                if (countList[1] == 0) {
+                    lineList[i] = "<b>"
+                    lineList[i + 1] = ""
+                    countList[1] = 1
+                    tags.push("</b>")
+                } else {
+                    lineList[i] = tags.pop()
+                    lineList[i + 1] = ""
+                    countList[1] = 0
+                }
+            }
+            if (lineList[i] == "*") {
+                if (countList[2] == 0) {
+                    lineList[i] = "<i>"
+                    countList[2] = 1
+                    tags.push("</i>")
+                } else {
+                    lineList[i] = tags.pop()
+                    countList[2] = 0
+                }
+            }
+        }
+        html.write(lineList.joinToString(""))
+    }
+    while (tags.isNotEmpty()) html.write(tags.pop())
+    html.close()
 }
 
 /**
