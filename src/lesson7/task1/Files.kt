@@ -364,68 +364,7 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    val tags = stack<String>()
-    val html = File(outputName).bufferedWriter()
-    val countList = mutableListOf(0, 0, 0, 0)
-    html.write("<html><body><p>")
-    tags.push("</html>")
-    tags.push("</body>")
-    tags.push("</p>")
-    val inpFile = mutableListOf<String>()
-    for (line in File(inputName).readLines()) {
-        inpFile += line
-    }
-    for (line in inpFile) {
-        if (line.isEmpty()) {
-            if (inpFile.indexOf(line) != inpFile.lastIndex) {
-                html.write(tags.pop())
-                html.write("<p>")
-                tags.push("</p>")
-                continue
-            } else html.write(tags.pop())
-        }
-        val lineList = line.toMutableList().map { it.toString() }.toMutableList()
-        for (i in 0 until (lineList.size - 1)) {
-            val other = lineList[i] + lineList[i + 1]
-            if (other == "~~") {
-                if (countList[0] == 0) {
-                    lineList[i] = "<s>"
-                    lineList[i + 1] = ""
-                    countList[0] = 1
-                    tags.push("</s>")
-                } else {
-                    lineList[i] = tags.pop()
-                    lineList[i + 1] = ""
-                    countList[0] = 0
-                }
-            }
-            if (other == "**") {
-                if (countList[1] == 0) {
-                    lineList[i] = "<b>"
-                    lineList[i + 1] = ""
-                    countList[1] = 1
-                    tags.push("</b>")
-                } else {
-                    lineList[i] = tags.pop()
-                    lineList[i + 1] = ""
-                    countList[1] = 0
-                }
-            }
-            if (lineList[i] == "*") {
-                if (countList[2] == 0) {
-                    lineList[i] = "<i>"
-                    countList[2] = 1
-                    tags.push("</i>")
-                } else {
-                    lineList[i] = tags.pop()
-                    countList[2] = 0
-                }
-            }
-        }
-        html.write(lineList.joinToString(""))
-    }
-    while (tags.isNotEmpty()) html.write(tags.pop())
-    html.close()
+    TODO()
 }
 
 /**
