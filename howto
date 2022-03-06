@@ -1,0 +1,14 @@
+1. remote add upstream-my https://github.com/leunamme4/KotlinAsFirst2021.git
+2. git branch backport
+3. git checkout backport
+4. git fetch upstream-my
+5. git cherry-pick -Xours 1137b420cc95fa6894edad69b31e2da1bb985d1d..e93d2aaf7f192d337f3437fca8b00350d59fbc6b (мои решения)
+6. gitk
+7. git checkout master
+8. git merge backport
+9. git fetch upstream-theirs
+10. git merge upstream-theirs/master -Xtheirs
+11. gitk
+12. git remote -v
+13. remotes, howto
+
