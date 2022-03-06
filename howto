@@ -6,9 +6,9 @@
 6. gitk
 7. git checkout master
 8. git merge backport
-9. git fetch upstream-theirs
-10. git merge upstream-theirs/master -Xtheirs
-11. gitk
-12. git remote -v
-13. remotes, howto
+9. remote add upstream-theirs https://github.com/Flay98/KotlinAsFirst2021.git
+11. git merge upstream-theirs/master -Xtheirs
+12. gitk
+13. git remote -v
+14. remotes, howto
 
