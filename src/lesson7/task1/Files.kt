@@ -65,17 +65,15 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    val writer = File(outputName).bufferedWriter()
-    for (line in File(inputName).readLines()) {
-        if (line.isEmpty()) {
-            writer.newLine()
-            continue
+    val inputFile = File(inputName)
+    val outputFile = File(outputName).bufferedWriter()
+    for (line in inputFile.readLines()) {
+        if (!line.startsWith("_")) {
+            outputFile.write(line)
+            outputFile.newLine()
         }
-        if (line.startsWith('_')) continue
-        writer.write(line)
-        writer.newLine()
     }
-    writer.close()
+    outputFile.close()
 }
 
 /**
@@ -88,31 +86,20 @@ fun deleteMarked(inputName: String, outputName: String) {
  *
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
-    val answer = mutableMapOf<String, Int>()
-    for (element in substrings.distinct()) answer[element] = 0
-    File(inputName).forEachLine {
-        for (string in substrings.distinct()) {
-            if (it.isEmpty()) continue
-            val lineSplit = it.toMutableList()
-            var number = 0
-            val stringSplit = string.toMutableList()
-            for (i in lineSplit.indices) {
-                var j = i
-                for (k in stringSplit.indices) {
-                    if (j < lineSplit.size) {
-                        if (lineSplit[j].equals(stringSplit[k], ignoreCase = true)) {
-                            if (k == stringSplit.lastIndex) number += 1
-                            j += 1
-                        } else break
-                    }
-                }
-            }
-            number += answer[string]!!
-            answer[string] = number
+    val inputFile = File(inputName).readText()
+    val repeats = mutableMapOf<String, Int>()
+    val unrepeatedSubstrings = substrings.toSet()
+    for (i in unrepeatedSubstrings) {
+        if (i !in repeats)
+            repeats[i] = 0
+        for (j in inputFile.indices) {
+            if (inputFile.startsWith(i, j, ignoreCase = true))
+                repeats[i] = repeats[i]!! + 1
         }
     }
-    return answer
+    return repeats
 }
+
 
 /**
  * Средняя (12 баллов)
@@ -149,19 +136,20 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    var max = 0
-    val listFile = mutableListOf<String>()
+    val textToList = mutableListOf<String>()
+    var maxLength = 0
     for (line in File(inputName).readLines()) {
-        listFile += line.trim()
-        if (line.trim().length > max) max = line.trim().length
+        val line1 = line.trim(' ')
+        if (line1.length > maxLength) maxLength = line1.length
+        textToList.add(line1)
     }
-    val writer = File(outputName).bufferedWriter()
-    for (line in listFile) {
-        val difference = max - line.length
-        writer.write(line.padStart(line.length + difference / 2, ' '))
-        writer.newLine()
+    val outputFile = File(outputName).bufferedWriter()
+    for (line in textToList) {
+        val diff = maxLength - line.length
+        outputFile.write(line.padStart(line.length + diff / 2))
+        outputFile.newLine()
     }
-    writer.close()
+    outputFile.close()
 }
 
 /**
@@ -192,41 +180,33 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    var max = 0
-    val regex = "[ ]+".toRegex()
-    val listFile = mutableListOf<String>()
+    val textToList = mutableListOf<String>()
+    var maxLength = 0
     for (line in File(inputName).readLines()) {
-        listFile += line.trim()
-        val thisLine = line.trim().split(regex).joinToString(" ")
-        if (thisLine.length > max) max = thisLine.length
+        val withoutSpaces = line.trim(' ').replace("[ ]+".toRegex(), " ")
+        if (withoutSpaces.length > maxLength) maxLength = withoutSpaces.length
+        textToList.add(withoutSpaces)
     }
-    val writer = File(outputName).bufferedWriter()
-    for (line in listFile) {
-        if (line.isEmpty() || regex.matches(line)) writer.newLine()
-        else {
-            if (line.split(regex).size == 1) {
-                writer.write(line)
-                writer.newLine()
-            } else {
-                val thisLine = line.split(regex).toMutableList()
-                var difference = max - thisLine.joinToString("").length
-                fun spaceMaker(list: List<String>): List<String> {
-                    for (i in list.indices) {
-                        if (i == list.lastIndex) {
-                            if (difference > 0) spaceMaker(list)
-                            else break
-                        }
-                        if (difference > 0) thisLine[i] += " "
-                        difference -= 1
-                    }
-                    return list
-                }
-                writer.write(spaceMaker(thisLine).joinToString(""))
-                writer.newLine()
+    val outputFile = File(outputName).bufferedWriter()
+    for (line in textToList) {
+        val words = line.split(" ").toMutableList()
+        if (line.isBlank()) outputFile.newLine()
+        else if (words.size == 1) {
+            outputFile.write(line)
+            outputFile.newLine()
+        } else {
+            var remainingSpaces = maxLength - line.length
+            var i = 0
+            while (remainingSpaces > 0) {
+                words[i] += " "
+                if (i < words.size - 2) i++ else i = 0
+                remainingSpaces--
             }
+            outputFile.write(words.joinToString(" "))
+            outputFile.newLine()
         }
     }
-    writer.close()
+    outputFile.close()
 }
 
 /**

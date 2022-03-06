@@ -67,15 +67,13 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String {
-    if (age in 1..199) {
-        if (age % 10 == 0 || age % 10 >= 5 || (age % 100 >= 11 && age % 100 <= 14))
-            return "$age лет"
-        if (age % 10 == 1) return "$age год"
-        if (age % 10 in 1..4) return "$age года"
+fun ageDescription(age: Int): String =
+    when {
+        age % 100 in 11..19 || age % 10 == 0 -> "$age лет"
+        age % 10 in 2..4 -> "$age года"
+        age % 10 == 1 -> "$age год"
+        else -> "$age лет"
     }
-    return "столько не живут"
-}
 
 /**
  * Простая (2 балла)
@@ -84,11 +82,7 @@ fun ageDescription(age: Int): String {
  * и t3 часов — со скоростью v3 км/час.
  * Определить, за какое время он одолел первую половину пути?
  */
-fun timeForHalfWay(
-    t1: Double, v1: Double,
-    t2: Double, v2: Double,
-    t3: Double, v3: Double
-): Double = TODO()
+fun timeForHalfWay(t1: Double, v1: Double, t2: Double, v2: Double, t3: Double, v3: Double): Double = TODO()
 
 /**
  * Простая (2 балла)
@@ -99,20 +93,11 @@ fun timeForHalfWay(
  * и 3, если угроза от обеих ладей.
  * Считать, что ладьи не могут загораживать друг друга
  */
-fun whichRookThreatens(
-    kingX: Int, kingY: Int,
-    rookX1: Int, rookY1: Int,
-    rookX2: Int, rookY2: Int
-): Int {
-    var k = 0
-    if (kingX == rookX1 || kingY == rookY1) {
-        k += 1
-    }
-    if (kingX == rookX2 || kingY == rookY2) {
-        k += 2
-    }
-    return k
-}
+fun whichRookThreatens(kingX: Int, kingY: Int, rookX1: Int, rookY1: Int, rookX2: Int, rookY2: Int): Int =
+    if (((rookX1 == kingX) || (rookY1 == kingY)) && ((rookX2 == kingX) || (rookY2 == kingY))) 3
+    else if (((rookX1 == kingX) || (rookY1 == kingY)) && ((rookX2 != kingX) || (rookY2 != kingY))) 1
+    else if (((rookX2 == kingX) || (rookY2 == kingY)) && ((rookX1 != kingX) || (rookY1 != kingY))) 2
+    else 0
 
 /**
  * Простая (2 балла)
@@ -124,20 +109,11 @@ fun whichRookThreatens(
  * и 3, если угроза есть и от ладьи и от слона.
  * Считать, что ладья и слон не могут загораживать друг друга.
  */
-fun rookOrBishopThreatens(
-    kingX: Int, kingY: Int,
-    rookX: Int, rookY: Int,
-    bishopX: Int, bishopY: Int
-): Int {
-    var k = 0
-    if (kingX == rookX || kingY == rookY) {
-        k += 1
-    }
-    if (abs(kingX - bishopX) == abs(kingY - bishopY)) {
-        k += 2
-    }
-    return k
-}
+fun rookOrBishopThreatens(kingX: Int, kingY: Int, rookX: Int, rookY: Int, bishopX: Int, bishopY: Int): Int =
+    if (((rookX == kingX) || (rookY == kingY)) && ((kingX - bishopX) * (kingX - bishopX) == (kingY - bishopY) * (kingY - bishopY))) 3
+    else if ((rookX == kingX) || (rookY == kingY)) 1
+    else if ((kingX - bishopX) * (kingX - bishopX) == (kingY - bishopY) * (kingY - bishopY)) 2
+    else 0
 
 /**
  * Простая (2 балла)
@@ -147,21 +123,7 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int {
-    val max1 = max(a, b)
-    val max2 = max(max1, c)
-    val min1 = min(a, b)
-    val min2 = min(min1, c)
-    val middle = a + b + c - (max2 + min2)
-    if (a + b > c && a + c > b && b + c > a) {
-        when {
-            ((middle.pow(2.0) + min2.pow(2.0)) > max2.pow(2.0)) -> return 0
-            ((middle.pow(2.0) + min2.pow(2.0)) == max2.pow(2.0)) -> return 1
-            ((middle.pow(2.0) + min2.pow(2.0)) < max2.pow(2.0)) -> return 2
-        }
-    }
-    return -1
-}
+fun triangleKind(a: Double, b: Double, c: Double): Double = TODO()
 
 /**
  * Средняя (3 балла)
@@ -173,15 +135,13 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
     when {
-        ((c == d && c >= a && b >= c) || (a == b && a >= c && d >= a)) -> 0
-        (a == c && b != d) -> abs(a - min(b, d))
-        (b == d && a != c) -> abs(b - max(a, c))
-        (a < c && c < d && d < b) -> d - c
-        (a > c && d > b) -> b - a
-        (c == b || a == d) -> 0
-        (a == c && b == d) -> b - a
-        (b > c && d > a && c > a) -> b - c
-        (d > a && b > c && b > d) -> d - a
-        else -> -1
+        ((b < c) || (d < a)) -> -1
+        ((a < c) && (b > c) && (b < d)) -> b - c
+        ((a < c) && (b > c) && (b > d)) -> d - c
+        ((c < a) && (b < d)) -> b - a
+        (b == c) -> 0
+        (a == c) && (b < d) -> b - a
+        (b == d) && (c > a) -> b - c
+        (b == d) && (c < a) -> b - a
+        else -> d - a
     }
-

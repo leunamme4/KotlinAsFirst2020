@@ -2,8 +2,9 @@
 
 package lesson3.task1
 
-import kotlin.math.*
-
+import kotlin.math.abs
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -74,14 +75,13 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    var l = abs(n)
-    var k = 0
-    if (l == 0) return 1
-    while (l > 0) {
-        k += 1
-        l /= 10
-    }
-    return k
+    var digitCount = 0
+    var nCopy = n
+    do {
+        nCopy /= 10
+        digitCount++
+    } while (abs(nCopy) > 0)
+    return digitCount
 }
 
 /**
@@ -91,20 +91,17 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
-    when (n) {
-        1, 2 -> return 1
+    var fib1 = 1
+    var fib2 = 1
+    var fibSum = 0
+    var circle = 0
+    while (circle < n - 2) {
+        fibSum = fib1 + fib2
+        fib1 = fib2
+        fib2 = fibSum
+        circle++
     }
-    var numb1 = 1
-    var numb2 = 1
-    var result = 0
-    var k = 3
-    while (k <= n) {
-        result = numb1 + numb2
-        numb1 = numb2
-        numb2 = result
-        k += 1
-    }
-    return result
+    return fib2
 }
 
 /**
@@ -112,14 +109,30 @@ fun fib(n: Int): Int {
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    if (n % 2 == 0)
+        return 2
+    else
+        for (i in (3..(n / 3)) step 2)
+            if (n % i == 0)
+                return i
+    return n
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    var maxDel = 1
+    for (i in (n / 2) downTo 1) {
+        if (n % i == 0)
+            if (i > maxDel)
+                maxDel = i
+    }
+    return maxDel
+}
 
 /**
  * Простая (2 балла)
@@ -137,7 +150,18 @@ fun maxDivisor(n: Int): Int = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var steps = 0
+    var xCopy = x
+    while (xCopy != 1) {
+        if (xCopy % 2 == 0)
+            xCopy /= 2
+        else
+            xCopy = 3 * xCopy + 1
+        steps++
+    }
+    return steps
+}
 
 /**
  * Средняя (3 балла)
@@ -154,16 +178,18 @@ fun lcm(m: Int, n: Int): Int = TODO()
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
 
-/**
- * Средняя (3 балла)
- *
- * Для заданных чисел m и n, m <= n, определить, имеется ли хотя бы один точный квадрат между m и n,
- * то есть, существует ли такое целое k, что m <= k*k <= n.
- * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
- */
-fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int): Boolean {
+    var mCopy = m
+    var nCopy = n
+    while (mCopy != nCopy)
+        if (mCopy > nCopy)
+            mCopy -= nCopy
+        else
+            nCopy -= mCopy
+    return mCopy == 1
+}
+
 
 /**
  * Средняя (3 балла)
@@ -172,7 +198,21 @@ fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var nCopy = n
+    var reverseNumber = 0
+    var loopCount = 0
+    var curDigit = 0
+    if (n < 10)
+        return n
+    while (nCopy > 0) {
+        curDigit = nCopy % 10
+        reverseNumber += ((curDigit * (10.0.pow(digitNumber(n) - loopCount - 1))).toInt())
+        loopCount++
+        nCopy /= 10
+    }
+    return reverseNumber
+}
 
 /**
  * Средняя (3 балла)
@@ -183,7 +223,7 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean = n == revert(n)
 
 /**
  * Средняя (3 балла)
@@ -227,23 +267,21 @@ fun cos(x: Double, eps: Double): Double = TODO()
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var k = 0
-    var element = 1
-    var prElement = 0
-    while (k < n) {
-        var el2 = element * element
-        k += digitNumber(el2)
-        if (k > n) {
-            val number = k - n
-            for (i in 1..number) {
-                el2 /= 10
-            }
-            return el2 % 10
-        }
-        prElement = el2
-        element += 1
+    var digitCount = 0
+    var count = 1
+    while (digitCount < n) {
+        digitCount += digitNumber(count * count)
+        count++
     }
-    return prElement % 10
+    count -= 1
+    val sqrCount = count * count
+    val sqrDigitCount = digitNumber(sqrCount)
+    return if (digitCount == n)
+        sqrCount % 10
+    else if (digitCount - n == 1 && sqrDigitCount > 2)
+        (sqrCount / 10) % 10
+    else
+        ((sqrCount / 10.0.pow(digitCount - n)).toInt()) % 10
 }
 
 /**
@@ -256,25 +294,19 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    when (n) {
-        1, 2 -> return 1
+    var digitCount = 0
+    var count = 1
+    while (digitCount < n) {
+        digitCount += digitNumber(fib(count))
+        count++
     }
-    var k = 2
-    var f1 = 1
-    var f2 = 1
-    var element = 0
-    while (k < n) {
-        element = f1 + f2
-        k += digitNumber(element)
-        if (k > n) {
-            val number = k - n
-            for (i in 1..number) {
-                element /= 10
-            }
-            return element % 10
-        }
-        f1 = f2
-        f2 = element
-    }
-    return element % 10
+    count -= 1
+    val fibCount = fib(count)
+    val fibDigitCount = digitNumber(fibCount)
+    return if (digitCount == n)
+        fib(count) % 10
+    else if (digitCount - n == 1 && fibDigitCount > 2)
+        (fibCount / 10) % 10
+    else
+        ((fibCount / 10.0.pow(digitCount - n)).toInt()) % 10
 }
